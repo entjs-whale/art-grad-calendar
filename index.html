@@ -216,8 +216,40 @@ a.tag{border:1px solid var(--line);background:none;color:var(--ink)}
   .dstrip{border-radius:14px 14px 0 0}
   .scrim{display:block;position:fixed;inset:0;background:var(--scrim);z-index:40}
 }
+.ftoggle{display:none}
 @media (max-width:640px){
   :root{--lane:20px}
+  body{padding-block:16px 40px}
+  .wrap{gap:12px}
+  .head{gap:10px}
+  h1{font-size:24px;margin:2px 0 4px}
+  .sub{font-size:12.5px}
+  .monthnav{width:100%;justify-content:space-between}
+  #mtabs{flex:1;justify-content:center}
+  .mbtn{padding:6px 12px}
+  .arrow{width:34px;height:34px}
+  /* 학교 필터: 버튼 하나로 접기 */
+  .ftoggle{display:inline-flex;align-items:center;justify-content:space-between;gap:8px;align-self:flex-start;
+    border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:500;cursor:pointer}
+  .ftoggle .caret{font-size:10px;color:var(--muted);transition:transform .15s}
+  .ftoggle[aria-expanded="true"] .caret{transform:rotate(180deg)}
+  .filters{display:none;margin-top:-4px}
+  .filters.open{display:flex}
+  .chip{font-size:12.5px;padding:4px 10px 4px 7px}
+  /* 동선짜기: 한 줄로 줄이고, 누르면 날짜·바로 찾기가 펼쳐짐 */
+  .route-bar{padding:10px 12px;gap:8px;border-width:1px}
+  .rform{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px}
+  .rlab{grid-column:1;grid-row:1;font-size:16px;margin:0;align-self:center}
+  .rlab small{display:none}
+  #rq{grid-column:2;grid-row:1;padding:7px 9px;font-size:14px}
+  .rform .rbtn[type="submit"]{grid-column:3;grid-row:1;padding:7px 11px}
+  #rdate,#rclear,.rquick{display:none}
+  .route-bar.open #rdate{display:block;grid-column:1/3;grid-row:2}
+  .route-bar.open #rclear:not([hidden]){display:block;grid-column:3;grid-row:2}
+  .route-bar.open .rquick{display:flex;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .route-bar.open .rquick::-webkit-scrollbar{display:none}
+  .rqc,.rquick .lab{flex:none}
+  #routeInline .route{padding-top:10px}
   .bar{font-size:10.5px;padding:0 4px;margin:0 1px}
   .bar .full{display:none} .bar .short{display:block}
   .cell{padding:4px 3px}
@@ -244,12 +276,13 @@ a.tag{border:1px solid var(--line);background:none;color:var(--ink)}
     </nav>
   </header>
 
+  <button class="ftoggle" id="ftoggle" type="button" aria-expanded="false" aria-controls="filters"></button>
   <div class="filters" id="filters" role="group" aria-label="학교 필터"></div>
 
   <section class="route-bar" aria-label="동선짜기">
     <form class="rform" id="rform" autocomplete="off">
       <label class="rlab" for="rq">동선짜기 <small>같은 날, 같은 동네에서 함께 볼 수 있는 전시를 묶어 드려요</small></label>
-      <input id="rq" list="rlist" placeholder="구 또는 동 이름 (예: 종로구, 인사동, 대학로)">
+      <input id="rq" list="rlist" placeholder="예: 종로구, 인사동, 대학로">
       <datalist id="rlist"></datalist>
       <input type="date" id="rdate" min="2026-10-13" max="2026-12-19" aria-label="방문 날짜">
       <button class="rbtn" type="submit">동선 찾기</button>
@@ -500,8 +533,15 @@ document.getElementById('prev').onclick=()=>{if(mi>0){mi--;render()}};
 document.getElementById('next').onclick=()=>{if(mi<MONTHS.length-1){mi++;render()}};
 
 const filters=document.getElementById('filters');
+const ftoggle=document.getElementById('ftoggle');
+ftoggle.addEventListener('click',()=>{
+  const open=ftoggle.getAttribute('aria-expanded')!=='true';
+  ftoggle.setAttribute('aria-expanded',open); filters.classList.toggle('open',open);
+});
 function renderFilters(){
   const all=active.size===order.length;
+  const picked=order.filter(k=>active.has(k));
+  ftoggle.innerHTML=`<span>학교 선택 · ${all?`전체 ${order.length}곳`:picked.length===1?esc(SCHOOLS[picked[0]].name):`${picked.length}곳`}</span><span class="caret" aria-hidden="true">▼</span>`;
   filters.innerHTML=`<button class="chip all" id="f-all" aria-pressed="${all}">전체 보기</button>`+
     order.map(k=>{const s=SCHOOLS[k];const n=EVENTS.filter(e=>e.school===k).length;
       return `<button class="chip" id="f-${k}" data-k="${k}" aria-pressed="${active.has(k)}" style="--h:${s.h};--s:${s.s};--l:${s.l}"><span class="sw"></span>${s.name}<span class="n">${n}</span></button>`}).join('');
@@ -689,7 +729,11 @@ function clearRoute(){
   routeQ=null; routeDay=null; dateTouched=false; rq.value=''; rmsg.hidden=true;
   document.getElementById('rclear').hidden=true; render();
 }
+const routeBar=document.querySelector('.route-bar');
+rq.addEventListener('focus',()=>routeBar.classList.add('open'));
 function renderRoute(){
+  if(routeQ) routeBar.classList.add('open');
+  else if(document.activeElement!==rq) routeBar.classList.remove('open');
   document.querySelectorAll('.rqc').forEach(b=>b.setAttribute('aria-pressed', !!routeQ && norm(b.dataset.q)===norm(routeQ)));
   const narrow=narrowMQ.matches;
   side.classList.toggle('has-route', !!routeQ && !narrow);

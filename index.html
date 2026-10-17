@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="2026년 가을 11개 대학 30개 미대 졸업전시 일정을 한 달력에서. 구·동 이름으로 같은 날 함께 볼 전시를 묶어 주는 동선짜기 기능.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="미대 졸업전시 캘린더 2026">
+<meta property="og:description" content="2026년 가을 11개 대학 30개 미대 졸업전시 일정을 한 달력에서. 구·동 이름으로 같은 날 함께 볼 전시를 묶어 주는 동선짜기 기능.">
+<meta property="og:url" content="https://entjs-whale.github.io/art-grad-calendar/">
+<meta name="twitter:card" content="summary">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
+<title>미대 졸업전시 캘린더 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* Layout: 월달력(좌) + 상세/목록 패널(우, 데스크톱 sticky · 모바일 하단 시트). 막대 색=학교 계열, 패턴=학과 */
+:root{
+  --paper:#F2F3F1; --sheet:#FFFFFF; --ink:#16181B; --muted:#62686E; --line:#D8DBD7; --out:#EAECE9;
+  --accent:#3143C8; --sun:#BE3B28; --sat:#3143C8;
+  --pat:rgba(255,255,255,.22); --lift:0; --scrim:rgba(14,16,18,.42);
+  --f-display:"Nanum Myeongjo","Noto Serif KR","Batang",serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --lane:22px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#111315; --sheet:#191C1F; --ink:#E7E9E6; --muted:#9BA2A7; --line:#2D3236; --out:#15181A;
+  --accent:#8E9CFF; --sun:#FF8B76; --sat:#8E9CFF; --pat:rgba(255,255,255,.2); --lift:9; --scrim:rgba(0,0,0,.6);
+  color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --paper:#111315; --sheet:#191C1F; --ink:#E7E9E6; --muted:#9BA2A7; --line:#2D3236; --out:#15181A;
+  --accent:#8E9CFF; --sun:#FF8B76; --sat:#8E9CFF; --pat:rgba(255,255,255,.2); --lift:9; --scrim:rgba(0,0,0,.6);
+  color-scheme:dark; }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 32px}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,3.4vw,40px);line-height:1.15;margin:4px 0 6px;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0;max-width:62ch}
+.monthnav{display:flex;align-items:center;gap:8px}
+.mbtn{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:500}
+.mbtn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.mbtn:disabled{opacity:.35;cursor:default}
+.arrow{width:36px;height:36px;padding:0;display:grid;place-items:center;font-size:16px}
+
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:5px 11px 5px 8px;cursor:pointer;font-size:13px}
+.chip .sw{width:12px;height:12px;border-radius:3px;background:hsl(var(--h) calc(var(--s)*1%) calc((var(--l) + var(--lift))*1%))}
+.chip .n{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.chip[aria-pressed="false"]{opacity:.45}
+.chip[aria-pressed="false"] .sw{background:transparent;outline:1.5px solid var(--muted);outline-offset:-1.5px}
+.chip.all{padding-left:11px}
+
+/* main layout */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+.cal{background:var(--sheet);border:1px solid var(--line);border-radius:6px;overflow:hidden;min-width:0}
+.calhead{display:flex;align-items:baseline;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.calhead h2{font-family:var(--f-display);font-weight:800;font-size:24px;margin:0}
+.calhead .meta{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.dow,.cells{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.dow div{padding:6px 8px;font-size:12px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--line)}
+.dow div:first-child{color:var(--sun)} .dow div:last-child{color:var(--sat)}
+.week{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:var(--lane);row-gap:3px;padding:30px 0 10px;min-height:104px;border-bottom:1px solid var(--line)}
+.week:last-child{border-bottom:0}
+.cells{position:absolute;inset:0}
+.cell{border-right:1px solid var(--line);padding:5px 7px}
+.cell:last-child{border-right:0}
+.cell.out{background:var(--out)}
+.num{font-family:var(--f-mono);font-size:12px;display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:999px}
+.cell.sun .num{color:var(--sun)} .cell.sat .num{color:var(--sat)}
+.cell.out .num{opacity:.45}
+.cell.today .num{background:var(--accent);color:var(--sheet);font-weight:500}
+
+.bar{position:relative;z-index:1;margin:0 3px;border:0;border-radius:4px;cursor:pointer;text-align:left;
+  padding:0 7px;height:var(--lane);display:flex;align-items:center;min-width:0;overflow:hidden;
+  color:#fff;font-size:11.5px;font-weight:600;letter-spacing:-.01em;text-shadow:0 1px 1px rgba(0,0,0,.35);
+  background-color:hsl(var(--h) calc(var(--s)*1%) calc((var(--l) + var(--lift))*1%));
+  transition:transform .12s ease, box-shadow .12s ease}
+.bar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .short{display:none}
+.bar.cl{margin-left:0;border-top-left-radius:0;border-bottom-left-radius:0}
+.bar.cr{margin-right:0;border-top-right-radius:0;border-bottom-right-radius:0}
+.bar:hover{transform:translateY(-1px);box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.bar.ended{opacity:.42}
+.bar.sel{outline:2px solid var(--ink);outline-offset:1px;opacity:1;z-index:2}
+
+/* patterns */
+[data-p="0"]{background-image:repeating-linear-gradient(45deg,var(--pat) 0 3px,transparent 3px 8px)}
+[data-p="1"]{background-image:radial-gradient(var(--pat) 1.3px,transparent 1.7px);background-size:6px 6px}
+[data-p="2"]{background-image:repeating-linear-gradient(0deg,var(--pat) 0 2px,transparent 2px 6px)}
+[data-p="3"]{background-image:repeating-linear-gradient(45deg,var(--pat) 0 1.5px,transparent 1.5px 6px),repeating-linear-gradient(-45deg,var(--pat) 0 1.5px,transparent 1.5px 6px)}
+[data-p="4"]{background-image:repeating-linear-gradient(90deg,var(--pat) 0 2px,transparent 2px 7px)}
+[data-p="5"]{background-image:conic-gradient(var(--pat) 25%,transparent 0 50%,var(--pat) 0 75%,transparent 0);background-size:8px 8px}
+[data-p="6"]{background-image:repeating-linear-gradient(-45deg,var(--pat) 0 6px,transparent 6px 13px)}
+[data-p="7"]{background-image:linear-gradient(var(--pat) 1px,transparent 1px),linear-gradient(90deg,var(--pat) 1px,transparent 1px);background-size:6px 6px}
+
+/* side panel */
+.side{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;background:var(--sheet);border:1px solid var(--line);border-radius:6px}
+.agenda{padding:16px}
+.agenda h3{font-size:13px;font-weight:600;margin:0 0 4px}
+.agenda .hint{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+.alist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.aitem{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:start;padding:9px 6px;border-top:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left;width:100%}
+.aitem:hover{background:var(--out)}
+.aitem .sw{width:10px;height:30px;border-radius:2px;background-color:hsl(var(--h) calc(var(--s)*1%) calc((var(--l) + var(--lift))*1%))}
+.aitem .t{font-weight:600;font-size:13px;line-height:1.35}
+.aitem .d{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.aitem.ended{opacity:.5}
+.pill{font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;white-space:nowrap;border:1px solid var(--line);color:var(--muted)}
+.pill.live{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+.pill.soon{color:var(--accent);border-color:var(--accent)}
+
+.detail{display:flex;flex-direction:column}
+.dstrip{height:46px;background-color:hsl(var(--h) calc(var(--s)*1%) calc((var(--l) + var(--lift))*1%));position:relative}
+.dbody{padding:16px 18px 20px;display:flex;flex-direction:column;gap:14px}
+.dtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.dtop .eyebrow{letter-spacing:.06em;text-transform:none;font-size:12px}
+.dtop h2{font-size:17px;font-weight:600;margin:2px 0 0;line-height:1.35;text-wrap:balance}
+.close{border:1px solid var(--line);background:var(--sheet);border-radius:999px;width:32px;height:32px;flex:none;cursor:pointer;font-size:15px;line-height:1}
+.etitle{font-family:var(--f-display);font-weight:800;font-size:24px;line-height:1.3;margin:0;text-wrap:balance;word-break:keep-all}
+.etitle.none{font-family:var(--f-body);font-weight:400;font-size:13px;color:var(--muted)}
+dl{margin:0;display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px 12px;border-top:1px solid var(--line);padding-top:14px}
+dt{font-size:12px;color:var(--muted);font-weight:500;padding-top:1px}
+dd{margin:0;min-width:0;font-size:13.5px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.hours{display:grid;grid-template-columns:auto 1fr;gap:2px 12px}
+.hours span:nth-child(odd){color:var(--muted)}
+.notes{margin:0;padding:10px 12px;background:var(--out);border-radius:4px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.notes p{margin:0}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.link{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ink);border-radius:999px;padding:7px 14px;color:var(--ink);text-decoration:none;font-weight:500;font-size:13px}
+.link:hover{background:var(--ink);color:var(--paper)}
+.sibs{display:flex;flex-direction:column;gap:6px}
+.sibs .lab{font-size:12px;color:var(--muted)}
+.sibs .row{display:flex;flex-wrap:wrap;gap:6px}
+.sib{border:1px solid var(--line);background:none;border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer}
+.src{font-family:var(--f-mono);font-size:11px;color:var(--muted);word-break:break-all}
+.side.has-detail .agenda{display:none}
+.side.has-route .agenda{display:none}
+.side.has-detail .route{display:none}
+.scrim{display:none}
+
+/* 동선짜기 */
+.route-bar{display:flex;flex-direction:column;gap:10px;background:var(--sheet);border:1.5px solid var(--ink);border-radius:6px;padding:12px 14px}
+.rform{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0}
+.rlab{font-family:var(--f-display);font-weight:800;font-size:19px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-right:6px}
+.rlab small{font-family:var(--f-body);font-weight:400;font-size:12.5px;color:var(--muted)}
+.rform input{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:8px 10px;min-width:0}
+#rq{flex:1 1 240px}
+#rdate{flex:0 1 auto;font-family:var(--f-mono);font-size:13px}
+.rbtn{border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:4px;padding:8px 14px;cursor:pointer;font-weight:600}
+.rbtn.ghost{background:none;color:var(--ink);border-color:var(--line);font-weight:500}
+.rquick{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.rquick .lab,.route .lab{font-size:12px;color:var(--muted)}
+.rquick .lab{margin-right:2px}
+.rqc{border:1px dashed var(--muted);background:none;border-radius:999px;padding:3px 10px;font-size:12.5px;cursor:pointer}
+.rqc b{font-family:var(--f-mono);font-weight:500;font-size:11px;color:var(--muted);margin-left:5px}
+.rqc[aria-pressed="true"]{border-style:solid;border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.rqc[aria-pressed="true"] b{color:inherit}
+.rmsg{margin:0;font-size:13px;color:var(--sun)}
+.bar.dim{opacity:.13}
+.cell.pick{box-shadow:inset 0 0 0 2px var(--accent)}
+.cell.pick .num::after{content:"동선";font-family:var(--f-body);font-size:10px;font-weight:600;color:var(--accent);margin-left:4px}
+.cell.pick .num{width:auto}
+
+.route{padding:16px;display:flex;flex-direction:column;gap:14px}
+#routeInline .route{padding:12px 0 2px;border-top:1px solid var(--line)}
+.rhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.rhead .eyebrow{text-transform:none;letter-spacing:.04em;font-size:12px}
+.rhead h3{margin:2px 0 0;font-family:var(--f-display);font-weight:800;font-size:21px;line-height:1.3}
+.rnote{margin:0;font-size:12.5px;color:var(--muted)}
+.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.stop{position:relative;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;padding:11px 0}
+.stop+.stop{border-top:1px solid var(--line)}
+.stop:not(:last-child)::before{content:"";position:absolute;left:13px;top:42px;bottom:-6px;border-left:1.5px dashed var(--muted);opacity:.55}
+.stop .no{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;font-family:var(--f-mono);font-size:12.5px;color:#fff;
+  background-color:hsl(var(--h) calc(var(--s)*1%) calc((var(--l) + var(--lift))*1%))}
+.sbody{display:flex;flex-direction:column;gap:3px;min-width:0}
+.st{border:0;background:none;padding:0;text-align:left;font-weight:600;font-size:13.5px;cursor:pointer;line-height:1.4}
+.st:hover{text-decoration:underline}
+.sm{font-family:var(--f-mono);font-size:12.5px}
+.sv{font-size:12.5px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:2px}
+.tag{font-size:11px;border-radius:3px;padding:1px 7px;background:var(--out);color:var(--muted);text-decoration:none}
+.tag.hot{background:var(--accent);color:var(--sheet)}
+a.tag{border:1px solid var(--line);background:none;color:var(--ink)}
+.closedlist{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+.rdays{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.rday{border:1px solid var(--line);background:none;border-radius:4px;padding:4px 8px;font-family:var(--f-mono);font-size:11.5px;cursor:pointer}
+.rday.max{border-color:var(--accent);color:var(--accent)}
+.rday[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+.rgo{border:1px solid var(--ink);background:none;border-radius:999px;padding:7px 14px;font-weight:500;font-size:13px;cursor:pointer}
+.rgo:hover{background:var(--ink);color:var(--paper)}
+.foot{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:4px;max-width:90ch}
+.foot p{margin:0}
+.foot a,.src a{color:var(--ink);text-underline-offset:2px}
+
+@media (max-width:900px){
+  .main{grid-template-columns:minmax(0,1fr)}
+  .side{position:static;max-height:none}
+  .side.has-detail .agenda{display:block}
+  .detail{position:fixed;left:0;right:0;bottom:0;z-index:50;max-height:80vh;overflow:auto;background:var(--sheet);
+    border-radius:14px 14px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);
+    padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  .dstrip{border-radius:14px 14px 0 0}
+  .scrim{display:block;position:fixed;inset:0;background:var(--scrim);z-index:40}
+}
+@media (max-width:640px){
+  :root{--lane:20px}
+  .bar{font-size:10.5px;padding:0 4px;margin:0 1px}
+  .bar .full{display:none} .bar .short{display:block}
+  .cell{padding:4px 3px}
+  .num{font-size:11px;min-width:20px;height:20px}
+  .week{padding-top:27px;min-height:84px}
+  .dow div{padding:6px 3px;text-align:center}
+  .head{align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){.bar{transition:none}.bar:hover{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div>
+      <div class="eyebrow">Graduation Shows · 2026 Fall</div>
+      <h1>미대 졸업전시 캘린더 2026</h1>
+      <p class="sub" id="sub"></p>
+    </div>
+    <nav class="monthnav" aria-label="월 이동">
+      <button class="mbtn arrow" id="prev" aria-label="이전 달">‹</button>
+      <div id="mtabs" style="display:flex;gap:6px"></div>
+      <button class="mbtn arrow" id="next" aria-label="다음 달">›</button>
+    </nav>
+  </header>
+
+  <div class="filters" id="filters" role="group" aria-label="학교 필터"></div>
+
+  <section class="route-bar" aria-label="동선짜기">
+    <form class="rform" id="rform" autocomplete="off">
+      <label class="rlab" for="rq">동선짜기 <small>같은 날, 같은 동네에서 함께 볼 수 있는 전시를 묶어 드려요</small></label>
+      <input id="rq" list="rlist" placeholder="구 또는 동 이름 (예: 종로구, 인사동, 대학로)">
+      <datalist id="rlist"></datalist>
+      <input type="date" id="rdate" min="2026-10-13" max="2026-12-19" aria-label="방문 날짜">
+      <button class="rbtn" type="submit">동선 찾기</button>
+      <button class="rbtn ghost" type="button" id="rclear" hidden>지우기</button>
+    </form>
+    <div class="rquick" id="rquick"></div>
+    <p class="rmsg" id="rmsg" hidden></p>
+    <div id="routeInline"></div>
+  </section>
+
+  <div class="main">
+    <section class="cal" aria-label="월달력">
+      <div class="calhead"><h2 id="mtitle"></h2><span class="meta" id="mmeta"></span></div>
+      <div class="dow"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div>
+      <div id="weeks"></div>
+    </section>
+    <aside class="side" id="side">
+      <div class="detail" id="detail" hidden role="dialog" aria-modal="false" aria-labelledby="dname"></div>
+      <div id="routeSide"></div>
+      <div class="agenda" id="agenda"></div>
+    </aside>
+  </div>
+  <footer class="foot" id="foot"></footer>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+
+<script>
+const SCHOOLS = {
+  hongik:  {name:'홍익대학교',      short:'홍익대',   h:304, s:44, l:38},
+  ewha:    {name:'이화여자대학교',  short:'이화여대', h:148, s:52, l:30},
+  kookmin: {name:'국민대학교',      short:'국민대',   h:218, s:60, l:42},
+  kyunghee:{name:'경희대학교',      short:'경희대',   h:12,  s:62, l:42},
+  dongguk: {name:'동국대학교',      short:'동국대',   h:184, s:70, l:27},
+  konkuk:  {name:'건국대학교',      short:'건국대',   h:84,  s:46, l:30},
+  kyonggi: {name:'경기대학교',      short:'경기대',   h:38,  s:82, l:31},
+  suwon:   {name:'수원대학교',      short:'수원대',   h:250, s:44, l:46},
+  chugye:  {name:'추계예술대학교',  short:'추계예대', h:24,  s:30, l:36},
+  hannam:  {name:'한남대학교',      short:'한남대',   h:350, s:68, l:40},
+  hywu:    {name:'한양여자대학교',  short:'한양여대', h:212, s:10, l:38},
+};
+const S_HG='hongik-table';
+const CREDIT='@cultureart4u', CREDIT_URL='https://www.instagram.com/cultureart4u/';
+const ISSUE_URL='https://github.com/entjs-whale/art-grad-calendar/issues/new';
+const UPDATED='2026.10.17';
+const EVENTS = [
+  // 홍익대학교 — 2026학년도 미술대학 졸업전시 일정표 + 개별 포스터
+  {id:'hongik-fiber', school:'hongik', dept:'섬유미술패션디자인과', start:'2026-10-19', end:'2026-10-24',
+   venue:'문헌관 4층 현대미술관', map:'홍익대학교 문헌관',
+   hours:[['월','17:00–20:00'],['화–금','10:00–20:00'],['토','10:00–12:00']], opening:'10.19 (월) 17:00',
+   extra:[['졸업패션쇼','10.23 (금) 19:00 · 홍익대학교 체육관']], src:[S_HG]},
+  {id:'hongik-id', school:'hongik', dept:'산업디자인전공', org:'디자인학부', title:'COEXIST', start:'2026-10-27', end:'2026-10-31',
+   venue:'문헌관 4층 현대미술관', map:'홍익대학교 문헌관',
+   hours:[['화','12:00–20:00'],['수–목','10:00–20:00'],['금','10:00–18:00'],['토','10:00–14:00']], opening:'10.27 (화) 12:00',
+   notes:['출처마다 시간이 다릅니다. 위 시간은 홍익대 미술대학 졸업전시 일정표 기준이고, 학과 전시 안내에는 화 14:00–20:00(오프닝), 수–금 10:00–20:00으로 적혀 있습니다. 방문 전 학과 계정에서 확인하세요.'],
+   src:['post', S_HG]},
+  {id:'hongik-oriental', school:'hongik', dept:'동양화과', title:'truehood', start:'2026-11-02', end:'2026-11-07',
+   venue:'문헌관 4층 현대미술관 (HoMA)', map:'홍익대학교 문헌관',
+   hours:[['월–금','10:00–20:00'],['토','10:00–16:00']], opening:'11.03 (화) 13:00',
+   notes:['출처마다 토요일 마감 시간이 다릅니다. 위 시간은 전시 포스터 기준(16:00)이고, 홍익대 미술대학 졸업전시 일정표에는 14:00으로 적혀 있습니다. 토요일 오후에 가신다면 미리 확인하세요.'],
+   src:['post', S_HG]},
+  {id:'hongik-arts', school:'hongik', dept:'예술학과', kind:'학술제', start:'2026-11-09', end:'2026-11-11',
+   venue:'조형관(E동) 103호', map:'홍익대학교 조형관',
+   hours:[['월–수','18:00–20:00']], src:[S_HG]},
+  {id:'hongik-metal', school:'hongik', dept:'금속조형디자인과', title:'After Taste', start:'2026-11-09', end:'2026-11-14',
+   venue:'문헌관 4층 현대미술관', map:'홍익대학교 문헌관',
+   hours:[['11.09 (월)','18:00–20:00'],['11.10–11.13','10:00–20:00'],['11.14 (토)','10:00–14:00']], opening:'11.09 (월) 18:00',
+   src:['post', S_HG]},
+  {id:'hongik-wood', school:'hongik', dept:'목조형가구학과', start:'2026-11-16', end:'2026-11-21',
+   venue:'문헌관 4층 현대미술관', map:'홍익대학교 문헌관',
+   hours:[['월','14:00–20:00'],['화–금','10:00–20:00'],['토','10:00–14:00']], opening:'11.16 (월) 14:00', src:[S_HG]},
+  {id:'hongik-painting', school:'hongik', dept:'회화과', start:'2026-11-23', end:'2026-11-28',
+   venue:'문헌관 4층 현대미술관 · 미술학관(F동) 3층 실기실', map:'홍익대학교 문헌관',
+   hours:[['월','17:00–20:00'],['화–금','10:00–20:00'],['토','10:00–14:00']], opening:'11.23 (월) 17:00', src:[S_HG]},
+  {id:'hongik-print', school:'hongik', dept:'판화과', start:'2026-11-30', end:'2026-12-05',
+   venue:'문헌관 4층 현대미술관', map:'홍익대학교 문헌관',
+   hours:[['월–금','10:00–20:00'],['토','10:00–14:00']], opening:'12.01 (화) 14:00', src:[S_HG]},
+  {id:'hongik-vcd', school:'hongik', dept:'시각디자인전공', org:'디자인학부', start:'2026-12-07', end:'2026-12-12',
+   venue:'홍문관 7층 일대 · 홍문관 1층 다목적실(R104)', map:'홍익대학교 홍문관',
+   hours:[['월–금','10:00–20:00'],['토','10:00–18:00']], opening:'12.07 (월) 18:00',
+   notes:['홍문관 1층 R104는 월요일 15:00에 연다고 적혀 있습니다. 원본 이미지에서 이 부분이 일부 가려져 있어 정확하지 않을 수 있습니다.'], src:[S_HG]},
+  {id:'hongik-ceramic', school:'hongik', dept:'도예유리과', start:'2026-12-07', end:'2026-12-12',
+   venue:'문헌관 4층 현대미술관', map:'홍익대학교 문헌관',
+   hours:[['월','13:00–20:00'],['화–금','10:00–20:00'],['토','10:00–14:00']], opening:'12.07 (월) 13:00', src:[S_HG]},
+  {id:'hongik-sculpture', school:'hongik', dept:'조소과', start:'2026-12-15', end:'2026-12-19',
+   venue:'문헌관 4층 현대미술관', map:'홍익대학교 문헌관',
+   hours:[['화–금','10:00–20:00'],['토','10:00–14:00']], opening:'12.15 (화) 17:30', src:[S_HG]},
+
+  // 이화여자대학교 디자인학부 «OFFSTAGE» — 전공별 순차 전시
+  ...[['space','공간디자인','2026-10-27','2026-11-01'],['ind','산업디자인','2026-11-03','2026-11-08'],
+      ['vis','시각디자인','2026-11-10','2026-11-15'],['media','영상디자인','2026-11-17','2026-11-22']].map(([k,d,s,e])=>({
+   id:'ewha-'+k, school:'ewha', dept:d+'전공', org:'디자인학부', title:'OFFSTAGE', start:s, end:e,
+   venue:'조형예술관 A동 1층 로비 · 2층 이화아트센터', map:'이화여자대학교 조형예술관',
+   opening:'10.27 (화) 17:00 (전체 오프닝)',
+   notes:['디자인학부 전체 전시 기간은 10.27–11.22이며, 포스터에 적힌 전공별 일정대로 나눠 표시했습니다.'],
+   src:['post']})),
+
+  // 국민대학교
+  {id:'kookmin-sculpture', school:'kookmin', dept:'입체미술전공', org:'예술대학', title:'토큰이 없어 내일 제목을 생성하기로 했다.',
+   start:'2026-11-02', end:'2026-11-16', venue:'예술관 2층 국민 아트스페이스', address:'서울특별시 성북구 정릉로 77', map:'국민대학교 예술관',
+   hours:[['매일','09:00–17:00']], opening:'11.02 (월) 16:30', src:['post']},
+  {id:'kookmin-id', school:'kookmin', dept:'공업디자인학과', title:'PUNCTUATE', start:'2026-11-05', end:'2026-11-10',
+   venue:'조형관 조형갤러리 1층 전체', address:'서울특별시 성북구 정릉로 77', map:'국민대학교 조형관',
+   hours:[['매일','10:00–18:00']], opening:'11.05 (목) 13:00', src:['post']},
+  {id:'kookmin-painting', school:'kookmin', dept:'회화전공', org:'미술학부', title:'때로는 ( )을 믿는 마음으로', start:'2026-12-01', end:'2026-12-19',
+   venue:'예술관 2F K-art Gallery · 1F 중앙로비 · 110호 전시실', address:'서울특별시 성북구 정릉로 77', map:'국민대학교 예술관',
+   opening:'12.01 (화) 17:00', notes:['제26회 졸업전시. 관람 시간은 이미지에 적혀 있지 않습니다.'],
+   src:['post']},
+
+  // 경희대학교
+  {id:'kyunghee-vcd', school:'kyunghee', campus:'국제캠퍼스', dept:'시각디자인학과', title:'깊이를 만들고 단단해지는 것들',
+   start:'2026-11-04', end:'2026-11-08', venue:'예술디자인대학 2층 A&D홀', map:'경희대학교 국제캠퍼스 예술디자인대학',
+   hours:[['매일','10:00–20:00']], opening:'11.04 (수) 17:30', notes:['제35회 졸업전시.'],
+   src:['post']},
+  {id:'kyunghee-ceramic', school:'kyunghee', campus:'국제캠퍼스', dept:'도예학과', title:'imprint ; traces of touch',
+   start:'2026-11-25', end:'2026-11-30', venue:'예술디자인대학관 2F A&D 갤러리', address:'경기도 용인시 기흥구 덕영대로 1732',
+   map:'경희대학교 국제캠퍼스 예술디자인대학', hours:[['매일','09:00–19:30']], opening:'11.25 (수) 17:30',
+   notes:['제56회 졸업전시.'], src:['post']},
+
+  // 동국대학교
+  {id:'dongguk-korean', school:'dongguk', dept:'한국화전공', org:'미술학부', title:'풀+-어+디-다', start:'2026-10-21', end:'2026-10-26',
+   venue:'문화관 지하 1층 동국갤러리', address:'서울특별시 중구 필동로1길 30', map:'동국대학교 문화관',
+   hours:[['10.21–10.25','10:00–18:00'],['10.26 (월)','10:00–14:00']], src:['post']},
+  {id:'dongguk-western', school:'dongguk', dept:'서양화전공', org:'미술학부', title:'담아내는 것, 닮아가는 것', start:'2026-10-28', end:'2026-11-02',
+   venue:'갤러리동국 (문화관 지하 1층)', address:'서울특별시 중구 필동로1길 30', map:'동국대학교 문화관',
+   hours:[['수–일','10:00–18:00'],['월 (마지막 날)','10:00–14:00']], src:['post']},
+
+  // 건국대학교 글로컬캠퍼스
+  {id:'konkuk-fa1', school:'konkuk', campus:'글로컬캠퍼스', dept:'조형예술학과', kind:'졸업전시회 1부', title:'0°, 영점을 조정하라',
+   start:'2026-10-13', end:'2026-10-16', venue:'글로컬이음관(U11) 2층 상허갤러리 1·2전시실', map:'건국대학교 글로컬캠퍼스 글로컬이음관',
+   hours:[['화–목','09:00–18:00'],['금','09:00–17:00']], notes:['제45회 졸업전시 Part 1. 포스터 하단에 적힌 일정입니다.'],
+   src:['post']},
+  {id:'konkuk-fa2', school:'konkuk', campus:'글로컬캠퍼스', dept:'조형예술학과', kind:'졸업전시회 2부', title:'0°, 영점을 조정하라',
+   start:'2026-11-04', end:'2026-11-09', venue:'마루아트센터 B1 특별관', address:'서울특별시 종로구 인사동길 35-6', map:'마루아트센터',
+   hours:[['수–월','10:30–18:00']], notes:['출처마다 마감 시간이 다릅니다. 전시 안내에는 18:00, 포스터에는 18:30(6:30 pm)으로 적혀 있습니다.'],
+   src:['post']},
+  {id:'konkuk-vcd', school:'konkuk', campus:'글로컬캠퍼스', dept:'시각영상디자인학과', title:'HELLO WORLD', start:'2026-10-30', end:'2026-11-02',
+   venue:'홍익대학교 대학로 아트센터 B2 제3전시장', address:'서울특별시 종로구 대학로 57', map:'홍익대학교 대학로 아트센터',
+   hours:[['금–일','10:00–18:00'],['월','10:00–17:00']], opening:'10.30 (금) 16:00',
+   notes:['포스터 표기는 “2027 건국대학교 디자인대학 시각영상디자인학과 시각트랙 졸업전시회”입니다.'],
+   src:['post']},
+
+  // 단독 학교
+  {id:'kyonggi-western', school:'kyonggi', dept:'서양화전공', title:'당기세요 당기세요 당기세요', start:'2026-11-03', end:'2026-11-09',
+   venue:'동덕아트갤러리', address:'서울특별시 종로구 우정국로 68 동덕빌딩 B1', map:'동덕아트갤러리',
+   hours:[['매일','10:00–18:00']], notes:['제39회 졸업전시회.'], src:['post']},
+  {id:'suwon-craft', school:'suwon', dept:'공예디자인과', title:'ASSEMBLE', start:'2026-11-04', end:'2026-11-09',
+   venue:'라메르 갤러리 3관·4관', address:'서울특별시 종로구 관훈동 195-3', map:'갤러리라메르',
+   hours:[['매일','10:30–18:00']], opening:'11.04 (수) 17:00', src:['post']},
+  {id:'hannam-painting', school:'hannam', dept:'회화과', title:'아무도 우리와 같지 않다', start:'2026-11-11', end:'2026-11-24',
+   venue:'한남대학교 아트센터 엑시스 한남', map:'한남대학교 엑시스 한남',
+   hours:[['매일','10:00–18:00']], opening:'11.11 (수) 17:00', notes:['제39회 졸업전시. 영문 제목 NO ONE LIKE US.','전시장 ‘아트센터 엑시스 한남’의 정확한 위치는 확인하지 못해 한남대학교 캠퍼스(대전 대덕구 한남로 70) 기준으로 지역을 표시했습니다.'],
+   src:['post']},
+  {id:'chugye-oriental', school:'chugye', dept:'동양화전공', org:'미술창작학부', kind:'졸업작품전', title:'교집합', start:'2026-11-19', end:'2026-11-25',
+   venue:'창조관 C21 3·4층', address:'서울특별시 서대문구 북아현로 11가길 7', map:'추계예술대학교 창조관',
+   hours:[['매일','10:00–19:00']], opening:'11.19 (목) 16:00 · 창조관 3층 C21', notes:['제50회 졸업작품전.'],
+   src:['post']},
+  {id:'hywu-knit', school:'hywu', dept:'니트패션디자인과', kind:'졸업패션쇼', title:'編(편)', start:'2026-11-27', end:'2026-11-27',
+   venue:'DDP 패션몰 5F 패션창작스튜디오', map:'DDP패션몰',
+   hours:[['11.27 (금)','19:00 (하루 공연)']], notes:['제50회 졸업 패션쇼. 하루만 열립니다.'],
+   src:['post']},
+];
+
+/* ---------- helpers ---------- */
+const WD=['일','월','화','수','목','금','토'];
+const dn=(y,m,d)=>Math.round(Date.UTC(y,m,d)/864e5);
+const parse=s=>{const [y,m,d]=s.split('-').map(Number);return dn(y,m-1,d)};
+const fromDn=n=>{const t=new Date(n*864e5);return {y:t.getUTCFullYear(),m:t.getUTCMonth(),d:t.getUTCDate(),w:t.getUTCDay()}};
+const p2=n=>String(n).padStart(2,'0');
+const fmt=n=>{const t=fromDn(n);return `${p2(t.m+1)}.${p2(t.d)} (${WD[t.w]})`};
+const now=new Date(); const TODAY=dn(now.getFullYear(),now.getMonth(),now.getDate());
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// derive per-event fields: dates, colour shade, pattern
+const order=Object.keys(SCHOOLS); const counters={};
+EVENTS.forEach(e=>{
+  const sc=SCHOOLS[e.school]; const i=counters[e.school]=(counters[e.school]??-1)+1;
+  e.s=parse(e.start); e.e=parse(e.end);
+  e.h=sc.h+((i%5)-2)*7; e.sat=sc.s; e.l=sc.l+((i%3)-1)*4;
+  e.p=(i+order.indexOf(e.school)*3)%8;
+  e.kind=e.kind||'졸업전시회';
+  e.label=`${sc.name} ${e.dept} ${e.kind}`;
+  const part=e.kind.match(/[12]부/); e.shortLabel=`${sc.short} ${e.dept.replace(/(전공|학과|과)$/,'')}${part?' '+part[0]:''}`;
+});
+/* 전시장 지역 (구·동). 주소가 이미지에 없는 캠퍼스는 학교 소재지 기준 */
+const VENUES={
+  hongik:  {sido:'서울',gu:'마포구',dong:'상수동',alias:['홍대','홍익대','서교동']},
+  ewha:    {sido:'서울',gu:'서대문구',dong:'대현동',alias:['신촌','이대']},
+  chugye:  {sido:'서울',gu:'서대문구',dong:'북아현동',alias:['아현','충정로']},
+  kookmin: {sido:'서울',gu:'성북구',dong:'정릉동',alias:['정릉','국민대']},
+  dongguk: {sido:'서울',gu:'중구',dong:'장충동2가',alias:['필동','충무로','동국대']},
+  ddp:     {sido:'서울',gu:'중구',dong:'신당동',alias:['동대문','DDP','마장로']},
+  insadong:{sido:'서울',gu:'종로구',dong:'관훈동',alias:['인사동','안국']},
+  daehakro:{sido:'서울',gu:'종로구',dong:'연건동',alias:['대학로','혜화']},
+  kyunghee:{sido:'경기',gu:'용인시 기흥구',dong:'서천동',alias:['용인','기흥','국제캠퍼스']},
+  konkukG: {sido:'충북',gu:'충주시',dong:'단월동',alias:['충주','글로컬캠퍼스']},
+  hannam:  {sido:'대전',gu:'대덕구',dong:'오정동',alias:['대전','한남대']},
+};
+const VENUE_OF={'konkuk-fa1':'konkukG','konkuk-fa2':'insadong','konkuk-vcd':'daehakro','kyonggi-western':'insadong','suwon-craft':'insadong','hywu-knit':'ddp'};
+const norm=s=>String(s||'').replace(/^\s*동선\s*짜기\s*[-–:]?\s*/,'').replace(/\s+/g,'').toLowerCase();
+Object.values(VENUES).forEach(v=>{
+  const raw=[v.sido,v.gu,v.gu.split(' ').pop(),v.dong,v.sido+v.gu,...v.alias];
+  const t=new Set(); raw.forEach(r=>{const n=norm(r);t.add(n);const cut=n.replace(/(구|시|동)$/,'');if(cut.length>=2)t.add(cut)});
+  v.tokens=[...t]; v.where=`${v.sido} ${v.gu} ${v.dong}`; v.nick=v.alias[0];
+  v.guLabel=v.sido==='서울'?v.gu:(v.gu.includes('시')?v.gu:`${v.sido} ${v.gu}`);
+});
+EVENTS.forEach(e=>{e.v=VENUES[VENUE_OF[e.id]||e.school]});
+const matchV=(v,q)=>{const n=norm(q);return !!n&&v.tokens.some(t=>t===n||(n.length>=2&&t.startsWith(n)))};
+
+/* 날짜별 관람 시간 해석: '매일', '화–금', '수–월'(요일 순환), '11.10–11.13', '11.09 (월)' 형식 */
+function hoursOn(e,day){
+  if(!e.hours) return {open:true,text:null};
+  const w=fromDn(day).w;
+  for(const [k,v] of e.hours){
+    const key=k.replace(/\s*\(.*?\)\s*/g,'').trim(); let m;
+    if(key==='매일') return {open:true,text:v};
+    if((m=key.match(/^(\d{2})\.(\d{2})(?:–(\d{2})\.(\d{2}))?$/))){
+      const a=dn(2026,+m[1]-1,+m[2]), b=m[3]?dn(2026,+m[3]-1,+m[4]):a;
+      if(day>=a&&day<=b) return {open:true,text:v}; continue;
+    }
+    if((m=key.match(/^([일월화수목금토])(?:–([일월화수목금토]))?$/))){
+      const a=WD.indexOf(m[1]), b=m[2]?WD.indexOf(m[2]):a;
+      if(a<=b?(w>=a&&w<=b):(w>=a||w<=b)) return {open:true,text:v};
+    }
+  }
+  return {open:false,text:'휴관'};
+}
+const toMin=s=>{const m=s&&s.match(/(\d{1,2}):(\d{2})/g);if(!m)return null;return m.map(x=>{const [h,mm]=x.split(':');return +h*60+ +mm})};
+const status=e=> TODAY<e.s ? {cls:'soon',txt:`D-${e.s-TODAY}`} : TODAY>e.e ? {cls:'',txt:'종료'} : {cls:'live',txt:'진행 중'};
+const colorVars=e=>`--h:${e.h};--s:${e.sat};--l:${e.l}`;
+
+/* ---------- state ---------- */
+const MONTHS=[[2026,9],[2026,10],[2026,11]];
+let mi=(()=>{const t=fromDn(TODAY);const k=MONTHS.findIndex(([y,m])=>y===t.y&&m===t.m);return k>=0?k:(TODAY<dn(2026,9,1)?0:2)})();
+const active=new Set(order); let selected=null;
+const visible=()=>EVENTS.filter(e=>active.has(e.school));
+
+/* ---------- header bits ---------- */
+document.getElementById('sub').textContent=
+  `${Object.keys(SCHOOLS).length}개 대학 · ${EVENTS.length}개 전시 · 2026.10.13 – 12.19. 막대를 누르면 전시명, 기간, 장소가 열립니다. 최종 업데이트 ${UPDATED}`;
+document.getElementById('foot').innerHTML=
+  `<p>전시 정보 출처: <a href="${CREDIT_URL}" target="_blank" rel="noopener">${CREDIT}</a> 인스타그램 게시물에 소개된 각 학과 졸업전시 포스터와 홍익대학교 미술대학 졸업전시 일정표를 옮겨 정리했습니다. 전시장 지역(구·동)은 공개된 주소를 따로 확인해 붙였습니다.</p>
+   <p>출처끼리 시간이 다른 전시는 상세 정보에 함께 적었습니다. 일정은 학과 사정으로 바뀔 수 있으니 방문 전 각 학과 공식 계정을 확인하세요.</p>
+   <p>최종 업데이트 ${UPDATED} · 틀린 정보나 빠진 전시는 <a href="${ISSUE_URL}" target="_blank" rel="noopener">GitHub Issues로 제보</a>해 주세요.</p>`;
+const mtabs=document.getElementById('mtabs');
+MONTHS.forEach(([y,m],k)=>{const b=document.createElement('button');b.className='mbtn';b.id='mt'+k;b.textContent=`${m+1}월`;
+  b.onclick=()=>{mi=k;render()};mtabs.appendChild(b)});
+document.getElementById('prev').onclick=()=>{if(mi>0){mi--;render()}};
+document.getElementById('next').onclick=()=>{if(mi<MONTHS.length-1){mi++;render()}};
+
+const filters=document.getElementById('filters');
+function renderFilters(){
+  const all=active.size===order.length;
+  filters.innerHTML=`<button class="chip all" id="f-all" aria-pressed="${all}">전체 보기</button>`+
+    order.map(k=>{const s=SCHOOLS[k];const n=EVENTS.filter(e=>e.school===k).length;
+      return `<button class="chip" id="f-${k}" data-k="${k}" aria-pressed="${active.has(k)}" style="--h:${s.h};--s:${s.s};--l:${s.l}"><span class="sw"></span>${s.name}<span class="n">${n}</span></button>`}).join('');
+}
+filters.addEventListener('click',ev=>{
+  const b=ev.target.closest('.chip'); if(!b) return;
+  if(b.classList.contains('all')){order.forEach(k=>active.add(k))}
+  else{const k=b.dataset.k;
+    if(active.size===order.length){active.clear();active.add(k)}          // 첫 클릭은 그 학교만 보기
+    else if(active.has(k)){active.delete(k); if(!active.size) order.forEach(x=>active.add(x))}
+    else active.add(k)}
+  if(selected && !active.has(selected.school)) closeDetail(false);
+  render();
+});
+
+/* ---------- calendar ---------- */
+function render(){
+  renderFilters();
+  const [y,m]=MONTHS[mi];
+  MONTHS.forEach((_,k)=>document.getElementById('mt'+k).setAttribute('aria-pressed',k===mi));
+  document.getElementById('prev').disabled=mi===0; document.getElementById('next').disabled=mi===MONTHS.length-1;
+  document.getElementById('mtitle').textContent=`${y}년 ${m+1}월`;
+  const mStart=dn(y,m,1), mEnd=dn(y,m+1,0);
+  const inMonth=visible().filter(e=>e.s<=mEnd&&e.e>=mStart);
+  document.getElementById('mmeta').textContent=`이달 전시 ${inMonth.length}건`;
+
+  const lead=fromDn(mStart).w, gridStart=mStart-lead, nWeeks=Math.ceil((lead+(mEnd-mStart+1))/7);
+  let html='';
+  for(let w=0;w<nWeeks;w++){
+    const ws=gridStart+w*7, we=ws+6;
+    let cells='';
+    for(let d=0;d<7;d++){const n=ws+d,t=fromDn(n);
+      const cls=['cell',d===0?'sun':'',d===6?'sat':'',(n<mStart||n>mEnd)?'out':'',n===TODAY?'today':'',(routeQ&&n===routeDay)?'pick':''].join(' ');
+      cells+=`<div class="${cls}"><span class="num"${n===TODAY?' title="오늘"':''}>${t.d}</span></div>`}
+    const evs=visible().filter(e=>e.s<=we&&e.e>=ws).sort((a,b)=>a.s-b.s||(b.e-b.s)-(a.e-a.s));
+    const laneEnd=[]; let bars='';
+    evs.forEach(e=>{
+      const a=Math.max(e.s,ws)-ws, b=Math.min(e.e,we)-ws;
+      let lane=laneEnd.findIndex(x=>x<a); if(lane<0){lane=laneEnd.length;laneEnd.push(b)} else laneEnd[lane]=b;
+      const cls=['bar',e.s<ws?'cl':'',e.e>we?'cr':'',TODAY>e.e?'ended':'',selected===e?'sel':'',(routeQ&&!matchV(e.v,routeQ))?'dim':''].join(' ');
+      bars+=`<button class="${cls}" data-id="${e.id}" data-p="${e.p}" style="${colorVars(e)};grid-column:${a+1}/${b+2};grid-row:${lane+1}"
+        aria-label="${esc(e.label)}, ${fmt(e.s)}부터 ${fmt(e.e)}까지"><span class="full">${esc(e.label)}</span><span class="short">${esc(e.shortLabel)}</span></button>`;
+    });
+    html+=`<div class="week"><div class="cells">${cells}</div>${bars}</div>`;
+  }
+  document.getElementById('weeks').innerHTML=html;
+  renderAgenda(inMonth,m);
+  renderRoute();
+}
+document.getElementById('weeks').addEventListener('click',ev=>{
+  const b=ev.target.closest('.bar'); if(b) openDetail(EVENTS.find(e=>e.id===b.dataset.id));
+});
+
+/* ---------- agenda ---------- */
+function renderAgenda(list,m){
+  const sorted=[...list].sort((a,b)=>a.s-b.s||a.e-b.e);
+  const upcoming=sorted.filter(e=>TODAY<=e.e).length;
+  document.getElementById('agenda').innerHTML=
+    `<h3>${m+1}월 전시 목록</h3><p class="hint">${sorted.length}건 중 ${upcoming}건이 아직 관람 가능합니다. 항목을 누르면 상세 정보가 열립니다.</p>
+     <ul class="alist">${sorted.map(e=>{const st=status(e);
+      return `<li><button class="aitem${TODAY>e.e?' ended':''}" data-id="${e.id}"><span class="sw" data-p="${e.p}" style="${colorVars(e)}"></span>
+        <span><span class="t">${esc(e.label)}</span><br><span class="d">${fmt(e.s)}${e.e!==e.s?' – '+fmt(e.e):''}</span></span>
+        <span class="pill ${st.cls}">${st.txt}</span></button></li>`}).join('')}</ul>`;
+}
+document.getElementById('agenda').addEventListener('click',ev=>{
+  const b=ev.target.closest('.aitem'); if(b) openDetail(EVENTS.find(e=>e.id===b.dataset.id));
+});
+
+/* ---------- detail ---------- */
+const side=document.getElementById('side'), detail=document.getElementById('detail'), scrim=document.getElementById('scrim');
+function openDetail(e){
+  if(!e) return; selected=e; const sc=SCHOOLS[e.school]; const st=status(e);
+  const days=e.e-e.s+1;
+  const sibs=EVENTS.filter(x=>x.school===e.school&&x!==e);
+  const rows=[];
+  rows.push(['기간',`<span class="mono">2026.${fmt(e.s)}${e.e!==e.s?' – '+fmt(e.e):''}</span><br><span style="color:var(--muted);font-size:12.5px">${days===1?'하루':days+'일간'}</span>`]);
+  if(e.hours) rows.push(['관람 시간',`<div class="hours mono">${e.hours.map(([a,b])=>`<span>${esc(a)}</span><span>${esc(b)}</span>`).join('')}</div>`]);
+  if(e.opening) rows.push(['오프닝',`<span class="mono">${esc(e.opening)}</span>`]);
+  (e.extra||[]).forEach(([k,v])=>rows.push([k,esc(v)]));
+  rows.push(['장소',`${esc(sc.name)}${e.campus?' '+esc(e.campus):''}<br>${esc(e.venue)}`]);
+  if(e.address) rows.push(['주소',esc(e.address)]);
+  rows.push(['지역',`${esc(e.v.where)} <span style="color:var(--muted)">(${esc(e.v.nick)})</span>`]);
+  detail.innerHTML=`
+    <div class="dstrip" data-p="${e.p}" style="${colorVars(e)}"></div>
+    <div class="dbody">
+      <div class="dtop">
+        <div><div class="eyebrow">${esc(sc.name)}${e.campus?' · '+esc(e.campus):''}${e.org?' · '+esc(e.org):''}</div>
+          <h2 id="dname">${esc(e.dept)} ${esc(e.kind)}</h2></div>
+        <button class="close" id="dclose" aria-label="닫기">✕</button>
+      </div>
+      ${e.title?`<p class="etitle">《${esc(e.title)}》</p>`:`<p class="etitle none">별도 전시명은 일정표에 적혀 있지 않습니다.</p>`}
+      <div><span class="pill ${st.cls}">${st.txt}</span></div>
+      <dl>${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+      ${e.notes?`<div class="notes">${e.notes.map(n=>`<p>${esc(n)}</p>`).join('')}</div>`:''}
+      <div class="actions"><a class="link" href="https://map.naver.com/p/search/${encodeURIComponent(e.map||e.venue)}" target="_blank" rel="noopener">네이버 지도에서 찾기 ↗</a>
+        <button class="rgo" data-act="routefrom">${esc(e.v.guLabel)} 동선짜기</button></div>
+      ${sibs.length?`<div class="sibs"><span class="lab">${esc(sc.short)}의 다른 일정</span><div class="row">${sibs.map(x=>`<button class="sib" data-id="${x.id}">${esc(x.dept)}${/[12]부/.test(x.kind)?' '+x.kind.match(/[12]부/)[0]:''} · ${fmt(x.s).slice(0,5)}</button>`).join('')}</div></div>`:''}
+      <div class="src">출처: <a href="${CREDIT_URL}" target="_blank" rel="noopener">${CREDIT}</a> 인스타그램 게시물${e.src.includes(S_HG)?' (홍익대학교 미술대학 졸업전시 일정표 포함)':''} · 정보 오류는 <a href="${ISSUE_URL}" target="_blank" rel="noopener">여기로 제보</a></div>
+    </div>`;
+  detail.hidden=false; side.classList.add('has-detail');
+  const narrow=matchMedia('(max-width:900px)').matches; scrim.hidden=!narrow;
+  // 선택한 전시가 다른 달이면 그 달로 이동
+  const t=fromDn(Math.max(e.s, Math.min(e.e, TODAY))); const k=MONTHS.findIndex(([y,m])=>y===t.y&&m===t.m);
+  const [cy,cm]=MONTHS[mi]; const curS=dn(cy,cm,1), curE=dn(cy,cm+1,0);
+  if(!(e.s<=curE&&e.e>=curS) && k>=0) mi=k;
+  render();
+  if(!narrow) side.scrollTop=0;
+  try{history.replaceState(null,'','#'+e.id)}catch(_){}
+  document.getElementById('dclose').focus({preventScroll:true});
+}
+function closeDetail(rerender=true){
+  selected=null; detail.hidden=true; scrim.hidden=true; side.classList.remove('has-detail');
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(_){}
+  if(rerender) render();
+}
+detail.addEventListener('click',ev=>{
+  if(ev.target.closest('#dclose')) return closeDetail();
+  if(ev.target.closest('[data-act="routefrom"]')){
+    const e=selected, d=Math.min(Math.max(TODAY,e.s),e.e);
+    closeDetail(false); setRoute(e.v.guLabel,d); return;
+  }
+  const s=ev.target.closest('.sib'); if(s) openDetail(EVENTS.find(e=>e.id===s.dataset.id));
+});
+scrim.addEventListener('click',()=>closeDetail());
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&selected) closeDetail()});
+
+/* ---------- 동선짜기 ---------- */
+let routeQ=null, routeDay=null, dateTouched=false;
+const RANGE_S=Math.min(...EVENTS.map(e=>e.s)), RANGE_E=Math.max(...EVENTS.map(e=>e.e));
+const rq=document.getElementById('rq'), rdate=document.getElementById('rdate'), rmsg=document.getElementById('rmsg');
+const routeSide=document.getElementById('routeSide'), routeInline=document.getElementById('routeInline');
+const narrowMQ=matchMedia('(max-width:900px)');
+const iso=n=>{const t=fromDn(n);return `${t.y}-${p2(t.m+1)}-${p2(t.d)}`};
+const fmtLong=n=>{const t=fromDn(n);return `${t.m+1}월 ${t.d}일 (${WD[t.w]})`};
+
+function stopsOn(q,day){
+  const evs=EVENTS.filter(e=>matchV(e.v,q)&&e.s<=day&&e.e>=day).map(e=>({e,h:hoursOn(e,day)}));
+  return {open:evs.filter(x=>x.h.open), closed:evs.filter(x=>!x.h.open)};
+}
+function dayCounts(q){
+  const from=Math.max(TODAY,RANGE_S), out=[];
+  for(let d=from; d<=RANGE_E; d++) out.push([d,stopsOn(q,d).open.length]);
+  return out;
+}
+function bestDay(q){
+  let c=dayCounts(q).filter(x=>x[1]>0);
+  if(!c.length){ for(let d=RANGE_S; d<=RANGE_E; d++){const n=stopsOn(q,d).open.length; if(n) c.push([d,n])} }
+  if(!c.length) return null;
+  const mx=Math.max(...c.map(x=>x[1])); return c.find(x=>x[1]===mx)[0];
+}
+function regionTitle(q){
+  const vs=Object.values(VENUES).filter(v=>matchV(v,q));
+  if(vs.length===1) return `${vs[0].gu} ${vs[0].dong}`;
+  if(vs.length && vs.every(v=>v.gu===vs[0].gu)) return vs[0].guLabel;
+  return q.trim();
+}
+
+// 빠른 선택 칩(구 단위 + 자주 찾는 동네)과 자동완성
+(function buildQuick(){
+  const gus={}; EVENTS.forEach(e=>{gus[e.v.guLabel]=(gus[e.v.guLabel]||0)+1});
+  const hoods=['인사동','대학로','신촌'];
+  const chips=Object.entries(gus).sort((a,b)=>b[1]-a[1]).map(([k,n])=>[k,n])
+    .concat(hoods.map(h=>[h,EVENTS.filter(e=>matchV(e.v,h)).length]));
+  document.getElementById('rquick').innerHTML='<span class="lab">바로 찾기</span>'+
+    chips.map(([k,n],i)=>`<button class="rqc" id="rqc${i}" data-q="${esc(k)}" aria-pressed="false">${esc(k)}<b>${n}</b></button>`).join('');
+  const opts=new Set(); Object.values(VENUES).forEach(v=>{opts.add(v.guLabel);opts.add(v.dong);v.alias.forEach(a=>opts.add(a))});
+  document.getElementById('rlist').innerHTML=[...opts].map(o=>`<option value="${esc(o)}">`).join('');
+})();
+
+function setRoute(q,day){
+  q=String(q||'').replace(/^\s*동선\s*짜기\s*[-–:]?\s*/,'').trim();
+  if(!q){clearRoute();return}
+  if(!Object.values(VENUES).some(v=>matchV(v,q))){
+    rmsg.textContent=`‘${q}’에 있는 전시장을 찾지 못했어요. 구나 동 이름으로 다시 찾아보세요. 예: 종로구, 인사동, 대학로, 서대문구`;
+    rmsg.hidden=false; return;
+  }
+  rmsg.hidden=true; routeQ=q; rq.value=q;
+  routeDay=day ?? bestDay(q) ?? Math.max(TODAY,RANGE_S);
+  rdate.value=iso(routeDay); document.getElementById('rclear').hidden=false;
+  const t=fromDn(routeDay), k=MONTHS.findIndex(([y,m])=>y===t.y&&m===t.m); if(k>=0) mi=k;
+  render();
+  if(narrowMQ.matches) routeInline.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'nearest'});
+}
+function clearRoute(){
+  routeQ=null; routeDay=null; dateTouched=false; rq.value=''; rmsg.hidden=true;
+  document.getElementById('rclear').hidden=true; render();
+}
+function renderRoute(){
+  document.querySelectorAll('.rqc').forEach(b=>b.setAttribute('aria-pressed', !!routeQ && norm(b.dataset.q)===norm(routeQ)));
+  const narrow=narrowMQ.matches;
+  side.classList.toggle('has-route', !!routeQ && !narrow);
+  if(!routeQ){routeSide.innerHTML='';routeInline.innerHTML='';return}
+  const title=regionTitle(routeQ), {open,closed}=stopsOn(routeQ,routeDay);
+  // 같은 동끼리 묶고, 묶음 안에서는 마감이 이른 곳부터
+  const close=x=>{const m=toMin(x.h.text);return m?m[m.length-1]:1e4};
+  const start=x=>{const m=toMin(x.h.text);return m?m[0]:0};
+  const groups={}; open.forEach(x=>{(groups[x.e.v.dong]=groups[x.e.v.dong]||[]).push(x)});
+  const ordered=Object.values(groups).map(g=>g.sort((a,b)=>close(a)-close(b)||start(a)-start(b)))
+    .sort((a,b)=>close(a[0])-close(b[0])).flat();
+  const dongs=Object.keys(groups);
+  const counts=dayCounts(routeQ), multi=counts.filter(x=>x[1]>=2), mx=Math.max(0,...counts.map(x=>x[1]));
+  const stop=(x,i)=>{
+    const e=x.e, op=e.opening&&e.opening.match(/^(\d{2})\.(\d{2})/), opDay=op?dn(2026,+op[1]-1,+op[2]):null;
+    const opTime=opDay===routeDay?(e.opening.match(/\d{1,2}:\d{2}/)||[''])[0]:'';
+    return `<li class="stop"><span class="no" style="${colorVars(e)}">${i+1}</span><div class="sbody">
+      <button class="st" data-id="${e.id}">${esc(e.label)}</button>
+      <span class="sm">${x.h.text?esc(x.h.text):'관람 시간 미기재'}</span>
+      <span class="sv">${esc(e.venue)}</span>
+      <span class="tags"><span class="tag">${esc(e.v.dong)} · ${esc(e.v.nick)}</span>
+        ${opTime?`<span class="tag hot">오프닝 ${opTime}</span>`:''}${routeDay===e.e&&e.e!==e.s?'<span class="tag">마지막 날</span>':''}
+        <a class="tag" href="https://map.naver.com/p/search/${encodeURIComponent(e.map||e.venue)}" target="_blank" rel="noopener">지도 ↗</a></span>
+    </div></li>`};
+  const html=`<div class="route">
+    <div class="rhead"><div><div class="eyebrow">동선짜기 · ${esc(title)}</div><h3>${fmtLong(routeDay)} · ${open.length}곳</h3></div>
+      <button class="close" data-act="rclose" aria-label="동선 닫기">✕</button></div>
+    ${open.length?`<p class="rnote">${dongs.length>1?`${dongs.map(esc).join(' · ')} 순으로 동네를 묶고, `:''}마감이 이른 곳부터 번호를 매겼어요. 이름을 누르면 상세 정보가 열립니다.</p>
+      <ol class="stops">${ordered.map(stop).join('')}</ol>`
+      :`<p class="rnote">이날 ${esc(title)}에서 관람할 수 있는 전시가 없어요. 아래 날짜 중에서 골라 보세요.</p>`}
+    ${closed.length?`<div class="closedlist"><span class="lab">이날 휴관 (전시 기간 중)</span>${closed.map(x=>`<span>${esc(x.e.label)}</span>`).join('')}</div>`:''}
+    <div><span class="lab">${multi.length?`${esc(title)}에서 두 곳 이상 함께 볼 수 있는 날 (오늘 이후)`:`${esc(title)}에서 전시가 열리는 날 (오늘 이후, 하루 한 곳)`}</span>
+      <div class="rdays">${(multi.length?multi:counts.filter(x=>x[1]>0)).slice(0,24).map(([d,n])=>
+        `<button class="rday${n===mx&&n>1?' max':''}" data-day="${d}" aria-pressed="${d===routeDay}">${fmt(d)} · ${n}곳</button>`).join('')||'<span class="rnote">남은 일정이 없어요.</span>'}</div></div>
+  </div>`;
+  (narrow?routeInline:routeSide).innerHTML=html; (narrow?routeSide:routeInline).innerHTML='';
+}
+document.getElementById('rform').addEventListener('submit',ev=>{ev.preventDefault();setRoute(rq.value,dateTouched&&rdate.value?parse(rdate.value):null)});
+rdate.addEventListener('change',()=>{ if(!rdate.value) return; dateTouched=true;
+  if(routeQ){routeDay=Math.min(Math.max(parse(rdate.value),RANGE_S),RANGE_E);const t=fromDn(routeDay),k=MONTHS.findIndex(([y,m])=>y===t.y&&m===t.m);if(k>=0)mi=k;render()} });
+document.getElementById('rclear').addEventListener('click',clearRoute);
+document.getElementById('rquick').addEventListener('click',ev=>{const b=ev.target.closest('.rqc'); if(b) setRoute(b.dataset.q, dateTouched&&rdate.value?parse(rdate.value):null)});
+[routeSide,routeInline].forEach(el=>el.addEventListener('click',ev=>{
+  if(ev.target.closest('[data-act="rclose"]')) return clearRoute();
+  const d=ev.target.closest('.rday'); if(d){ setRoute(routeQ,+d.dataset.day); dateTouched=true; return; }
+  const s=ev.target.closest('.st'); if(s) openDetail(EVENTS.find(e=>e.id===s.dataset.id));
+}));
+narrowMQ.addEventListener('change',()=>renderRoute());
+
+render();
+const fromHash=EVENTS.find(e=>'#'+e.id===location.hash); if(fromHash) openDetail(fromHash);
+</script>
+</body>
+</html>

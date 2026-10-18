@@ -3,22 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="2026년 가을 11개 대학 30개 미대 졸업전시 일정을 한 달력에서. 구·동 이름으로 같은 날 함께 볼 전시를 묶어 주는 동선짜기 기능.">
+<meta name="description" content="전시 사이 — 2026년 가을 미대 졸업전시 일정을 한 달력에서. 구·동 이름으로 같은 날 함께 볼 전시를 묶어 주는 동선짜기, 전시별 포스터와 장소 안내.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="미대 졸업전시 캘린더 2026">
-<meta property="og:description" content="2026년 가을 11개 대학 30개 미대 졸업전시 일정을 한 달력에서. 구·동 이름으로 같은 날 함께 볼 전시를 묶어 주는 동선짜기 기능.">
+<meta property="og:site_name" content="전시 사이">
+<meta property="og:title" content="전시 사이 · 미대 졸업전시 캘린더 2026">
+<meta property="og:description" content="전시 사이 — 2026년 가을 미대 졸업전시 일정을 한 달력에서. 구·동 이름으로 같은 날 함께 볼 전시를 묶어 주는 동선짜기, 전시별 포스터와 장소 안내.">
 <meta property="og:url" content="https://entjs-whale.github.io/art-grad-calendar/">
 <meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2026%2026%22%3E%3Crect%20width%3D%2226%22%20height%3D%2226%22%20fill%3D%22%23fff%22/%3E%3Crect%20x%3D%221.25%22%20y%3D%221.25%22%20width%3D%2223.5%22%20height%3D%2223.5%22%20fill%3D%22none%22%20stroke%3D%22%2324352E%22%20stroke-width%3D%222.5%22/%3E%3Crect%20x%3D%226%22%20y%3D%225.5%22%20width%3D%223%22%20height%3D%2215%22%20fill%3D%22%2324352E%22/%3E%3Crect%20x%3D%2211.5%22%20y%3D%225.5%22%20width%3D%223%22%20height%3D%2215%22%20fill%3D%22%2324352E%22/%3E%3Crect%20x%3D%2217%22%20y%3D%225.5%22%20width%3D%223%22%20height%3D%2215%22%20fill%3D%22%2324352E%22/%3E%3C/svg%3E">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
-<title>미대 졸업전시 캘린더 2026</title>
+<title>전시 사이</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@700;800&display=swap">
 <style>
 /* Layout: 월달력(좌) + 상세/목록 패널(우, 데스크톱 sticky · 모바일 하단 시트). 막대 색=학교 계열, 패턴=학과 */
 :root{
   --paper:#F2F3F1; --sheet:#FFFFFF; --ink:#16181B; --muted:#62686E; --line:#D8DBD7; --out:#EAECE9;
-  --accent:#3143C8; --sun:#BE3B28; --sat:#3143C8;
+  --accent:#3143C8; --sun:#BE3B28; --sat:#3143C8; --brand:#24352E;
   --pat:rgba(255,255,255,.22); --lift:0; --scrim:rgba(14,16,18,.42);
   --f-display:"Nanum Myeongjo","Noto Serif KR","Batang",serif;
   --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
@@ -27,11 +29,11 @@
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --paper:#111315; --sheet:#191C1F; --ink:#E7E9E6; --muted:#9BA2A7; --line:#2D3236; --out:#15181A;
-  --accent:#8E9CFF; --sun:#FF8B76; --sat:#8E9CFF; --pat:rgba(255,255,255,.2); --lift:9; --scrim:rgba(0,0,0,.6);
+  --accent:#8E9CFF; --sun:#FF8B76; --sat:#8E9CFF; --brand:#CFE0D6; --pat:rgba(255,255,255,.2); --lift:9; --scrim:rgba(0,0,0,.6);
   color-scheme:dark; } }
 :root[data-theme="dark"]{
   --paper:#111315; --sheet:#191C1F; --ink:#E7E9E6; --muted:#9BA2A7; --line:#2D3236; --out:#15181A;
-  --accent:#8E9CFF; --sun:#FF8B76; --sat:#8E9CFF; --pat:rgba(255,255,255,.2); --lift:9; --scrim:rgba(0,0,0,.6);
+  --accent:#8E9CFF; --sun:#FF8B76; --sat:#8E9CFF; --brand:#CFE0D6; --pat:rgba(255,255,255,.2); --lift:9; --scrim:rgba(0,0,0,.6);
   color-scheme:dark; }
 
 *{box-sizing:border-box}
@@ -146,6 +148,14 @@ dd{margin:0;min-width:0;font-size:13.5px}
 .sibs .row{display:flex;flex-wrap:wrap;gap:6px}
 .sib{border:1px solid var(--line);background:none;border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer}
 .src{font-family:var(--f-mono);font-size:11px;color:var(--muted);word-break:break-all}
+.poster{margin:0;background:var(--out);padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.poster a{display:block;line-height:0}
+.poster img{display:block;max-width:100%;max-height:360px;width:auto;height:auto;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.poster figcaption{font-size:12px;color:var(--muted);text-align:center}
+.brand{display:flex;align-items:center;gap:10px;color:var(--brand);margin-bottom:10px}
+.brand .mark{width:28px;height:28px;flex:none}
+.brand .bname{font-family:var(--f-body);font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1}
+.brand .btag{font-family:var(--f-body);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-left:6px;padding-top:2px}
 .side.has-detail .agenda{display:none}
 .side.has-route .agenda{display:none}
 .side.has-detail .route{display:none}
@@ -214,6 +224,7 @@ a.tag{border:1px solid var(--line);background:none;color:var(--ink)}
     border-radius:14px 14px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);
     padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
   .dstrip{border-radius:14px 14px 0 0}
+  .poster img{max-height:46vh}
   .scrim{display:block;position:fixed;inset:0;background:var(--scrim);z-index:40}
 }
 .ftoggle{display:none}
@@ -223,6 +234,10 @@ a.tag{border:1px solid var(--line);background:none;color:var(--ink)}
   .wrap{gap:12px}
   .head{gap:10px}
   h1{font-size:24px;margin:2px 0 4px}
+  .brand{margin-bottom:6px;gap:8px}
+  .brand .mark{width:24px;height:24px}
+  .brand .bname{font-size:19px}
+  .brand .btag{font-size:10.5px;letter-spacing:.16em;margin-left:2px}
   .sub{font-size:12.5px}
   .monthnav{width:100%;justify-content:space-between}
   #mtabs{flex:1;justify-content:center}
@@ -265,7 +280,10 @@ a.tag{border:1px solid var(--line);background:none;color:var(--ink)}
 <div class="wrap">
   <header class="head">
     <div>
-      <div class="eyebrow">Graduation Shows · 2026 Fall</div>
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 26 26" aria-hidden="true"><rect x="1.25" y="1.25" width="23.5" height="23.5" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="6" y="5.5" width="3" height="15" fill="currentColor"/><rect x="11.5" y="5.5" width="3" height="15" fill="currentColor"/><rect x="17" y="5.5" width="3" height="15" fill="currentColor"/></svg>
+        <span class="bname">전시 사이</span><span class="btag">Graduation Shows</span>
+      </div>
       <h1>미대 졸업전시 캘린더 2026</h1>
       <p class="sub" id="sub"></p>
     </div>
@@ -322,11 +340,26 @@ const SCHOOLS = {
   chugye:  {name:'추계예술대학교',  short:'추계예대', h:24,  s:30, l:36},
   hannam:  {name:'한남대학교',      short:'한남대',   h:350, s:68, l:40},
   hywu:    {name:'한양여자대학교',  short:'한양여대', h:212, s:10, l:38},
+  gachon:  {name:'가천대학교',      short:'가천대',   h:196, s:80, l:30},
+  uos:     {name:'서울시립대학교',  short:'서울시립대', h:0, s:0,  l:24},
+  mju:     {name:'명지대학교',      short:'명지대',   h:322, s:70, l:45},
+  pknu:    {name:'국립부경대학교',  short:'부경대',   h:170, s:60, l:30},
+  cnu:     {name:'충남대학교',      short:'충남대',   h:230, s:32, l:32},
+  dongduk: {name:'동덕여자대학교',  short:'동덕여대', h:275, s:35, l:40},
+  kongju:  {name:'공주대학교',      short:'공주대',   h:340, s:35, l:35},
+  hanseo:  {name:'한서대학교',      short:'한서대',   h:100, s:30, l:34},
+  yu:      {name:'영남대학교',      short:'영남대',   h:205, s:45, l:44},
+  skuniv:  {name:'서경대학교',      short:'서경대',   h:8,   s:78, l:46},
+  pnu:     {name:'부산대학교',      short:'부산대',   h:225, s:80, l:45},
+  smu:     {name:'상명대학교',      short:'상명대',   h:240, s:8,  l:46},
+  duksung: {name:'덕성여자대학교',  short:'덕성여대', h:45,  s:40, l:34},
+  daegu:   {name:'대구대학교',      short:'대구대',   h:50,  s:90, l:30},
+  hyerica: {name:'한양대학교 ERICA', short:'한양대 ERICA', h:190, s:30, l:38},
 };
 const S_HG='hongik-table';
 const CREDIT='@cultureart4u', CREDIT_URL='https://www.instagram.com/cultureart4u/';
 const ISSUE_URL='https://github.com/entjs-whale/art-grad-calendar/issues/new';
-const UPDATED='2026.10.17';
+const UPDATED='2026.10.18';
 const EVENTS = [
   // 홍익대학교 — 2026학년도 미술대학 졸업전시 일정표 + 개별 포스터
   {id:'hongik-fiber', school:'hongik', dept:'섬유미술패션디자인과', start:'2026-10-19', end:'2026-10-24',
@@ -443,7 +476,74 @@ const EVENTS = [
    venue:'DDP 패션몰 5F 패션창작스튜디오', map:'DDP패션몰',
    hours:[['11.27 (금)','19:00 (하루 공연)']], notes:['제50회 졸업 패션쇼. 하루만 열립니다.'],
    src:['post']},
+
+  // ---- 2026.10.18 추가 17건 ----
+  {id:'gachon-sculpture', school:'gachon', dept:'조소과', title:'번지지 않은 채로', start:'2026-10-19', end:'2026-11-01',
+   venue:'비전타워 B1 갤러리', address:'경기도 성남시 수정구 성남대로 1342', map:'가천대학교 비전타워',
+   hours:[['10.19–10.31','10:00–20:00'],['11.01 (일)','10:00–18:00']], opening:'10.19 (월) 17:00', src:['post']},
+  {id:'uos-id', school:'uos', dept:'산업디자인전공', org:'디자인학과', kind:'졸업작품전시회', title:'°C 〈CELSIUS〉', start:'2026-11-18', end:'2026-11-25',
+   venue:'빨간벽돌갤러리', address:'서울특별시 동대문구 서울시립대로 163', map:'서울시립대학교 빨간벽돌갤러리',
+   hours:[['11.25 (수)','11:00–13:00'],['월–금','11:00–20:00'],['토–일','11:00–19:00']], opening:'11.18 (수) 17:00',
+   notes:['제41회 졸업작품전시회. 마지막 날(25일)은 13시까지 운영합니다.'], src:['post']},
+  {id:'mju-anim', school:'mju', dept:'영상애니메이션디자인전공', title:'PUZZLE', start:'2026-11-05', end:'2026-11-09',
+   venue:'모나코스페이스 1관 메인홀 (부띠크모나코 B1)', address:'서울 서초구 서초대로 397', map:'모나코스페이스',
+   hours:[['매일','11:00–20:00']], opening:'11.05 (목) 18:00 · 오프닝 파티', notes:['제25회 졸업전시회.'], src:['post']},
+  {id:'pknu-vcd', school:'pknu', dept:'시각디자인전공', title:'손뼉치기', start:'2026-10-30', end:'2026-11-03',
+   venue:'핵심역량도서관 1F 갤러리 라운지', map:'국립부경대학교 도서관', opening:'10.30 (금) 16:00–17:00',
+   notes:['제38회 졸업전시. 관람 시간은 이미지에 적혀 있지 않습니다.','지역은 부경대 대연캠퍼스(학교 대표 주소) 기준으로 표시했습니다.'], src:['post']},
+  {id:'cnu-craft', school:'cnu', dept:'도자·섬유디자인전공', org:'디자인창의학과', title:'connection', start:'2026-11-09', end:'2026-11-14',
+   venue:'예술대학 미술관 B1 백마아트홀', map:'충남대학교 예술대학',
+   hours:[['매일','09:00–18:00']], opening:'11.09 (월) 17:00', src:['post']},
+  {id:'dongduk-vcd', school:'dongduk', dept:'시각디자인전공', org:'디자인이노베이션대학', kind:'졸업작품전시회', title:'(0)수증 : 零數', start:'2026-10-29', end:'2026-11-02',
+   venue:'디자인연구센터 (Design Hub)', address:'서울특별시 강남구 삼성로 762', map:'동덕여자대학교 디자인이노베이션대학',
+   hours:[['매일','10:00–18:00']], src:['post']},
+  {id:'kongju-jewel', school:'kongju', dept:'주얼리금속디자인학과', title:'LOADING...', start:'2026-11-18', end:'2026-11-22',
+   venue:'로즈앤라임 B1', address:'서울특별시 중구 다산로 138', map:'로즈앤라임',
+   notes:['제23회 졸업전시회. 관람 시간은 이미지에 적혀 있지 않습니다.'], src:['post']},
+  {id:'hanseo-space', school:'hanseo', dept:'공간디자인학과', title:'자아탐닉 (自我耽溺)', start:'2026-11-06', end:'2026-11-09',
+   venue:'언더스탠드에비뉴 아트센터', address:'서울특별시 성동구 왕십리로 63', map:'언더스탠드에비뉴',
+   hours:[['매일','10:00–21:00']], opening:'11.06 (금) 17:00',
+   notes:['출처마다 시작일이 다릅니다. 포스터에는 11.06(금)–11.09(월), 전시 안내에는 11.07–11.09로 적혀 있어 오프닝이 있는 포스터 기준으로 표시했습니다.'], src:['post']},
+  {id:'yu-product', school:'yu', dept:'생활제품디자인학과', title:'35,040', start:'2026-11-03', end:'2026-11-08',
+   venue:'천마아트센터 B1 갤러리관', address:'경북 경산시 대학로 280', map:'영남대학교 천마아트센터',
+   hours:[['매일','10:00–19:00']], opening:'11.03 (화) 18:00', src:['post']},
+  {id:'skuniv-vd', school:'skuniv', dept:'비주얼디자인전공', org:'디자인학부', title:'쐐기를 박다', start:'2026-10-28', end:'2026-11-01',
+   venue:'NOL 서경스퀘어 B1 스콘갤러리', address:'서울 종로구 동숭길 148', map:'NOL 서경스퀘어',
+   hours:[['매일','10:00–18:00']], opening:'10.28 (수) 17:00', notes:['제32회 졸업전시회.'], src:['post']},
+  {id:'pnu-dt', school:'pnu', dept:'디자인앤테크놀로지전공', org:'디자인학과', title:'잔향', start:'2026-11-06', end:'2026-11-08',
+   venue:'부산디자인진흥원 1층 전시실', address:'부산 해운대구 센텀동로 57', map:'부산디자인진흥원',
+   hours:[['매일','10:00–18:00']], opening:'11.06 (금) 17:00', notes:['제17회 졸업전시회.'], src:['post']},
+  {id:'smu-craft1', school:'smu', campus:'서울캠퍼스', dept:'생활예술전공', kind:'졸업전 1부', title:'SYNCHRONICITY', start:'2026-11-10', end:'2026-11-17',
+   venue:'미래백년관 B1 월해갤러리', map:'상명대학교 미래백년관',
+   hours:[['11.17 (화)','10:00–12:00 (클로징)'],['매일','10:00–20:00']], notes:['제54회 졸업전 1부.'], src:['post']},
+  {id:'smu-craft2', school:'smu', campus:'서울캠퍼스', dept:'생활예술전공', kind:'졸업전 2부', title:'SYNCHRONICITY', start:'2026-11-19', end:'2026-11-23',
+   venue:'더서울라이티움 제1관 (B2)', address:'서울 성동구 성수동1가 685-696', map:'더서울라이티움',
+   hours:[['매일','10:00–20:00']], opening:'11.19 (목) 17:00', notes:['제54회 졸업전 2부.'], src:['post']},
+  {id:'konkuk-film', school:'konkuk', campus:'서울캠퍼스', dept:'영상학과', org:'예술디자인대학', title:'겹의 순간', start:'2026-11-12', end:'2026-11-18',
+   venue:'예술디자인대학 9층 (F9)', map:'건국대학교 예술디자인대학',
+   extra:[['상영','11.13–11.15 · 예술디자인대학 B1 KU시네마']],
+   notes:['제11회 졸업전시. 관람 시간은 이미지에 적혀 있지 않습니다.'], src:['post']},
+  {id:'duksung-interior', school:'duksung', dept:'실내디자인전공', title:'사이는 공간(: 비어있는 곳)이 아니다', start:'2026-10-30', end:'2026-11-04',
+   venue:'스페이스 소포라 갤러리 B1', address:'서울 중구 덕수궁길 114', map:'스페이스 소포라',
+   hours:[['11.04 (수)','10:00–14:00'],['매일','10:00–18:00']], notes:['제61회 졸업전시회. 시간은 포스터 기준입니다.'], src:['post']},
+  {id:'daegu-id', school:'daegu', dept:'산업디자인학과', title:'EPOQUE', start:'2026-10-20', end:'2026-10-27',
+   venue:'대구섬유박물관 2층 기획전시실', address:'대구광역시 동구 팔공로 227', map:'대구섬유박물관',
+   hours:[['매일','09:00–18:00']], opening:'10.21 (수) 18:00–20:00', notes:['제42회 졸업전시.'], src:['post']},
+  {id:'konkuk-media', school:'konkuk', dept:'미디어콘텐츠학과', org:'디자인대학', title:'꼬두라미 : 다다른 곳', start:'2026-11-11', end:'2026-11-15',
+   venue:'홍익대학교 대학로 아트센터 갤러리 1관 (B1)', address:'서울 종로구 대학로 57', map:'홍익대학교 대학로 아트센터',
+   hours:[['매일','10:00–17:30']], opening:'11.14 (토) 16:30 · 오프닝 세리머니', notes:['제11회 졸업전시회.'], src:['post']},
+  {id:'hyerica-cd', school:'hyerica', dept:'커뮤니케이션디자인학과', title:'우리들은 양을 센다', start:'2026-10-28', end:'2026-11-01',
+   venue:'홍익대학교 대학로 아트센터 B1 전시장', address:'서울 종로구 대학로 57', map:'홍익대학교 대학로 아트센터',
+   hours:[['10.28 (수)','13:00–18:00'],['10.29–11.01','10:00–18:00']], notes:['제40회 졸업전시회.'], src:['post']},
 ];
+
+/* 포스터: posters/<파일>.jpg. 홍익대 개별 포스터가 없는 학과는 미대 일정표 이미지 */
+const POSTER_FILES=new Set(['hongik-oriental','kyunghee-ceramic','kookmin-painting','kyonggi-western','dongguk-korean','hongik-metal',
+  'kookmin-sculpture','kookmin-id','konkuk-vcd','chugye-oriental','dongguk-western','hongik-id','suwon-craft','kyunghee-vcd',
+  'hannam-painting','hywu-knit','gachon-sculpture','uos-id','mju-anim','pknu-vcd','cnu-craft','dongduk-vcd','kongju-jewel',
+  'hanseo-space','yu-product','skuniv-vd','pnu-dt','konkuk-film','duksung-interior','daegu-id','konkuk-media','hyerica-cd']);
+const posterOf=e=> POSTER_FILES.has(e.id)?e.id : e.school==='ewha'?'ewha' : /^konkuk-fa/.test(e.id)?'konkuk-fa'
+  : /^smu-craft/.test(e.id)?'smu-craft' : e.school==='hongik'?'hongik-table' : null;
 
 /* ---------- helpers ---------- */
 const WD=['일','월','화','수','목','금','토'];
@@ -479,8 +579,26 @@ const VENUES={
   kyunghee:{sido:'경기',gu:'용인시 기흥구',dong:'서천동',alias:['용인','기흥','국제캠퍼스']},
   konkukG: {sido:'충북',gu:'충주시',dong:'단월동',alias:['충주','글로컬캠퍼스']},
   hannam:  {sido:'대전',gu:'대덕구',dong:'오정동',alias:['대전','한남대']},
+  gachon:  {sido:'경기',gu:'성남시 수정구',dong:'복정동',alias:['성남','가천대']},
+  uos:     {sido:'서울',gu:'동대문구',dong:'전농동',alias:['시립대','청량리']},
+  monaco:  {sido:'서울',gu:'서초구',dong:'서초동',alias:['강남역','모나코스페이스']},
+  pknu:    {sido:'부산',gu:'남구',dong:'대연동',alias:['부경대','경성대']},
+  cnu:     {sido:'대전',gu:'유성구',dong:'궁동',alias:['충남대','유성']},
+  dongduk: {sido:'서울',gu:'강남구',dong:'청담동',alias:['청담','강남']},
+  roselime:{sido:'서울',gu:'중구',dong:'신당동',alias:['약수','신당']},
+  understand:{sido:'서울',gu:'성동구',dong:'성수동1가',alias:['성수','서울숲']},
+  lightium:{sido:'서울',gu:'성동구',dong:'성수동1가',alias:['성수','서울숲']},
+  yu:      {sido:'경북',gu:'경산시',dong:'대동',alias:['경산','영남대']},
+  skuniv:  {sido:'서울',gu:'종로구',dong:'혜화동',alias:['대학로','혜화']},
+  bdc:     {sido:'부산',gu:'해운대구',dong:'우동',alias:['센텀','해운대']},
+  smu:     {sido:'서울',gu:'종로구',dong:'홍지동',alias:['상명대','세검정']},
+  konkukS: {sido:'서울',gu:'광진구',dong:'화양동',alias:['건대','건대입구']},
+  sophora: {sido:'서울',gu:'중구',dong:'정동',alias:['덕수궁','시청','정동길']},
+  dtm:     {sido:'대구',gu:'동구',dong:'봉무동',alias:['팔공산']},
 };
-const VENUE_OF={'konkuk-fa1':'konkukG','konkuk-fa2':'insadong','konkuk-vcd':'daehakro','kyonggi-western':'insadong','suwon-craft':'insadong','hywu-knit':'ddp'};
+const VENUE_OF={'konkuk-fa1':'konkukG','konkuk-fa2':'insadong','konkuk-vcd':'daehakro','kyonggi-western':'insadong','suwon-craft':'insadong','hywu-knit':'ddp',
+  'mju-anim':'monaco','kongju-jewel':'roselime','hanseo-space':'understand','pnu-dt':'bdc','smu-craft2':'lightium','konkuk-film':'konkukS',
+  'duksung-interior':'sophora','daegu-id':'dtm','konkuk-media':'daehakro','hyerica-cd':'daehakro'};
 const norm=s=>String(s||'').replace(/^\s*동선\s*짜기\s*[-–:]?\s*/,'').replace(/\s+/g,'').toLowerCase();
 Object.values(VENUES).forEach(v=>{
   const raw=[v.sido,v.gu,v.gu.split(' ').pop(),v.dong,v.sido+v.gu,...v.alias];
@@ -488,7 +606,7 @@ Object.values(VENUES).forEach(v=>{
   v.tokens=[...t]; v.where=`${v.sido} ${v.gu} ${v.dong}`; v.nick=v.alias[0];
   v.guLabel=v.sido==='서울'?v.gu:(v.gu.includes('시')?v.gu:`${v.sido} ${v.gu}`);
 });
-EVENTS.forEach(e=>{e.v=VENUES[VENUE_OF[e.id]||e.school]});
+EVENTS.forEach(e=>{e.v=VENUES[VENUE_OF[e.id]||e.school]; e.poster=posterOf(e)});
 const matchV=(v,q)=>{const n=norm(q);return !!n&&v.tokens.some(t=>t===n||(n.length>=2&&t.startsWith(n)))};
 
 /* 날짜별 관람 시간 해석: '매일', '화–금', '수–월'(요일 순환), '11.10–11.13', '11.09 (월)' 형식 */
@@ -521,7 +639,7 @@ const visible=()=>EVENTS.filter(e=>active.has(e.school));
 
 /* ---------- header bits ---------- */
 document.getElementById('sub').textContent=
-  `${Object.keys(SCHOOLS).length}개 대학 · ${EVENTS.length}개 전시 · 2026.10.13 – 12.19. 막대를 누르면 전시명, 기간, 장소가 열립니다. 최종 업데이트 ${UPDATED}`;
+  `${Object.keys(SCHOOLS).length}개 대학 · ${EVENTS.length}개 전시 · 2026.10.13 – 12.19. 막대를 누르면 포스터와 전시명, 기간, 장소가 열립니다. 최종 업데이트 ${UPDATED}`;
 document.getElementById('foot').innerHTML=
   `<p>전시 정보 출처: <a href="${CREDIT_URL}" target="_blank" rel="noopener">${CREDIT}</a> 인스타그램 게시물에 소개된 각 학과 졸업전시 포스터와 홍익대학교 미술대학 졸업전시 일정표를 옮겨 정리했습니다. 전시장 지역(구·동)은 공개된 주소를 따로 확인해 붙였습니다.</p>
    <p>출처끼리 시간이 다른 전시는 상세 정보에 함께 적었습니다. 일정은 학과 사정으로 바뀔 수 있으니 방문 전 각 학과 공식 계정을 확인하세요.</p>
@@ -626,6 +744,9 @@ function openDetail(e){
   rows.push(['지역',`${esc(e.v.where)} <span style="color:var(--muted)">(${esc(e.v.nick)})</span>`]);
   detail.innerHTML=`
     <div class="dstrip" data-p="${e.p}" style="${colorVars(e)}"></div>
+    ${e.poster?`<figure class="poster"><a href="posters/${e.poster}.jpg" target="_blank" rel="noopener" title="포스터 크게 보기">
+      <img src="posters/${e.poster}.jpg" alt="${esc(e.title||e.label)} ${e.poster==='hongik-table'?'홍익대 미술대학 졸업전시 일정표':'포스터'}" decoding="async"></a>
+      ${e.poster==='hongik-table'?'<figcaption>개별 포스터 대신 홍익대학교 미술대학 졸업전시 일정표를 보여 드려요.</figcaption>':''}</figure>`:''}
     <div class="dbody">
       <div class="dtop">
         <div><div class="eyebrow">${esc(sc.name)}${e.campus?' · '+esc(e.campus):''}${e.org?' · '+esc(e.org):''}</div>
@@ -702,8 +823,8 @@ function regionTitle(q){
 // 빠른 선택 칩(구 단위 + 자주 찾는 동네)과 자동완성
 (function buildQuick(){
   const gus={}; EVENTS.forEach(e=>{gus[e.v.guLabel]=(gus[e.v.guLabel]||0)+1});
-  const hoods=['인사동','대학로','신촌'];
-  const chips=Object.entries(gus).sort((a,b)=>b[1]-a[1]).map(([k,n])=>[k,n])
+  const hoods=['인사동','대학로','성수'];
+  const chips=Object.entries(gus).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([k,n])=>[k,n])
     .concat(hoods.map(h=>[h,EVENTS.filter(e=>matchV(e.v,h)).length]));
   document.getElementById('rquick').innerHTML='<span class="lab">바로 찾기</span>'+
     chips.map(([k,n],i)=>`<button class="rqc" id="rqc${i}" data-q="${esc(k)}" aria-pressed="false">${esc(k)}<b>${n}</b></button>`).join('');

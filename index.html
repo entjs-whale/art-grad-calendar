@@ -227,7 +227,13 @@ a.tag{border:1px solid var(--line);background:none;color:var(--ink)}
   .poster img{max-height:46vh}
   .scrim{display:block;position:fixed;inset:0;background:var(--scrim);z-index:40}
 }
-.ftoggle{display:none}
+/* 학교 필터: 학교가 많아 모든 화면에서 버튼 하나로 접기 */
+.ftoggle{display:inline-flex;align-items:center;justify-content:space-between;gap:8px;align-self:flex-start;
+  border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:500;cursor:pointer}
+.ftoggle .caret{font-size:10px;color:var(--muted);transition:transform .15s}
+.ftoggle[aria-expanded="true"] .caret{transform:rotate(180deg)}
+.filters{display:none;margin-top:-8px}
+.filters.open{display:flex}
 @media (max-width:640px){
   :root{--lane:20px}
   body{padding-block:16px 40px}
@@ -355,11 +361,22 @@ const SCHOOLS = {
   duksung: {name:'덕성여자대학교',  short:'덕성여대', h:45,  s:40, l:34},
   daegu:   {name:'대구대학교',      short:'대구대',   h:50,  s:90, l:30},
   hyerica: {name:'한양대학교 ERICA', short:'한양대 ERICA', h:190, s:30, l:38},
+  snu:     {name:'서울대학교',      short:'서울대',   h:30,  s:25, l:38},
+  cau:     {name:'중앙대학교',      short:'중앙대',   h:215, s:70, l:40},
+  sookmyung:{name:'숙명여자대학교', short:'숙명여대', h:58,  s:70, l:32},
+  keimyung:{name:'계명대학교',      short:'계명대',   h:200, s:55, l:40},
+  skku:    {name:'성균관대학교',    short:'성균관대', h:135, s:55, l:32},
+  sungshin:{name:'성신여자대학교',  short:'성신여대', h:15,  s:60, l:40},
+  seoultech:{name:'서울과학기술대학교', short:'서울과기대', h:110, s:40, l:32},
+  swu:     {name:'서울여자대학교',  short:'서울여대', h:0,   s:0,  l:40},
+  kangwon: {name:'강원대학교',      short:'강원대',   h:195, s:75, l:36},
+  hknu:    {name:'한경국립대학교',  short:'한경대',   h:325, s:80, l:42},
+  knuh:    {name:'한국전통문화대학교', short:'전통문화대', h:355, s:50, l:32},
 };
 const S_HG='hongik-table';
 const CREDIT='@cultureart4u', CREDIT_URL='https://www.instagram.com/cultureart4u/';
 const ISSUE_URL='https://github.com/entjs-whale/art-grad-calendar/issues/new';
-const UPDATED='2026.10.18';
+const UPDATED='2026.10.20';
 const EVENTS = [
   // 홍익대학교 — 2026학년도 미술대학 졸업전시 일정표 + 개별 포스터
   {id:'hongik-fiber', school:'hongik', dept:'섬유미술패션디자인과', start:'2026-10-19', end:'2026-10-24',
@@ -389,7 +406,7 @@ const EVENTS = [
   {id:'hongik-painting', school:'hongik', dept:'회화과', start:'2026-11-23', end:'2026-11-28',
    venue:'문헌관 4층 현대미술관 · 미술학관(F동) 3층 실기실', map:'홍익대학교 문헌관',
    hours:[['월','17:00–20:00'],['화–금','10:00–20:00'],['토','10:00–14:00']], opening:'11.23 (월) 17:00', src:[S_HG]},
-  {id:'hongik-print', school:'hongik', dept:'판화과', start:'2026-11-30', end:'2026-12-05',
+  {id:'hongik-print', school:'hongik', dept:'판화과', title:'Being Go!', start:'2026-11-30', end:'2026-12-05',
    venue:'문헌관 4층 현대미술관', map:'홍익대학교 문헌관',
    hours:[['월–금','10:00–20:00'],['토','10:00–14:00']], opening:'12.01 (화) 14:00', src:[S_HG]},
   {id:'hongik-vcd', school:'hongik', dept:'시각디자인전공', org:'디자인학부', start:'2026-12-07', end:'2026-12-12',
@@ -535,15 +552,85 @@ const EVENTS = [
   {id:'hyerica-cd', school:'hyerica', dept:'커뮤니케이션디자인학과', title:'우리들은 양을 센다', start:'2026-10-28', end:'2026-11-01',
    venue:'홍익대학교 대학로 아트센터 B1 전시장', address:'서울 종로구 대학로 57', map:'홍익대학교 대학로 아트센터',
    hours:[['10.28 (수)','13:00–18:00'],['10.29–11.01','10:00–18:00']], notes:['제40회 졸업전시회.'], src:['post']},
+  // ---- 2026.10.20 추가 ----
+  {id:'kookmin-ceramic', school:'kookmin', dept:'도자공예학과', title:'16P1', start:'2026-10-28', end:'2026-11-02',
+   venue:'마루아트센터 그랜드관 (신관 3F)', address:'서울 종로구 인사동길 35-6', map:'마루아트센터',
+   hours:[['매일','10:30–18:30']], opening:'10.28 (수) 18:00 · 관계자 대상', src:['post']},
+  {id:'snu-metal', school:'snu', dept:'금속공예전공', org:'미술대학', title:'Where Things Live', start:'2026-11-26', end:'2026-11-29',
+   venue:'74동 1층 전시홀', map:'서울대학교 74동',
+   hours:[['매일','10:00–18:00']], opening:'11.26 (목) 17:00', src:['post']},
+  {id:'cau-korean', school:'cau', campus:'서울캠퍼스', dept:'한국화전공', kind:'졸업작품전', title:'언어의 재정의', start:'2026-11-20', end:'2026-11-26',
+   venue:'301관 아트센터 제1·2전시실', map:'중앙대학교 301관',
+   hours:[['매일','09:00–19:00']], opening:'11.20 (금) 18:00', notes:['제78회 졸업작품전.'], src:['post']},
+  {id:'sookmyung-painting', school:'sookmyung', dept:'회화과', title:'튕겨져 나가 아무 데나 꽂히곤 하지', start:'2026-11-19', end:'2026-11-25',
+   venue:'청파갤러리 1·2관 · 무지개갤러리 · 문갤러리 · 미술대학 605·607호 오픈스튜디오', map:'숙명여자대학교 청파갤러리',
+   hours:[['매일','10:00–19:00']], opening:'11.19 (목) 17:00', notes:['제41회 졸업전시.'], src:['post']},
+  {id:'keimyung-painting', school:'keimyung', campus:'대명캠퍼스', dept:'회화과', title:'해:지고도 선명한', start:'2026-11-30', end:'2026-12-06',
+   venue:'극재미술관', map:'계명대학교 대명캠퍼스 극재미술관',
+   hours:[['매일','10:00–18:00']], opening:'12.03 (목) 14:00', notes:['제59회 졸업전시회.'], src:['post']},
+  {id:'skku-surface', school:'skku', campus:'인문사회과학캠퍼스', dept:'써피스디자인전공', org:'디자인학과', title:'LAYER TO HIGHER', start:'2026-11-03', end:'2026-11-08',
+   venue:'경영관 1층 성균갤러리', address:'서울 종로구 성균관로 25-2', map:'성균관대학교 경영관',
+   hours:[['월–금','10:00–20:00'],['토–일','10:00–18:00']], opening:'11.03 (화) 18:00', notes:['제34회 학부 졸업전시회.'], src:['post']},
+  {id:'duksung-oriental', school:'duksung', dept:'동양화전공', kind:'졸업작품전시회', title:'Loading...[ ]', start:'2026-12-09', end:'2026-12-14',
+   venue:'마루아트센터 3층 제2·3·4전시실', address:'서울 종로구 인사동길 35-6', map:'마루아트센터',
+   hours:[['매일','10:30–18:30']], opening:'12.09 (수) 17:00', src:['post']},
+  {id:'sungshin-design', school:'sungshin', dept:'디자인과', title:'구겨질수록', start:'2026-11-03', end:'2026-11-08',
+   venue:'수정관 1F 가온전시실 · 난향관 4F 파이룸', address:'서울 성북구 보문로34다길 2', map:'성신여자대학교 수정캠퍼스',
+   hours:[['화','14:00–20:00'],['수–토','10:00–20:00'],['일','10:00–18:00']], src:['post']},
+  {id:'seoultech-ceramic', school:'seoultech', dept:'도예학과', title:'땅을 딛고 오롯이', start:'2026-11-18', end:'2026-11-23',
+   venue:'갤러리 인사1010', address:'서울 종로구 인사동10길 10', map:'갤러리 인사1010',
+   hours:[['매일','11:00–19:00']], notes:['제43회 졸업전시.'], src:['post']},
+  {id:'kyonggi-jewel', school:'kyonggi', dept:'장신구·금속디자인전공', title:'LOOK UP', start:'2026-10-21', end:'2026-10-25',
+   venue:'예술대학 호연갤러리', address:'경기도 수원시 영통구 광교산로 154-42', map:'경기대학교 수원캠퍼스 예술대학',
+   hours:[['매일','10:00–20:00']], opening:'10.21 (수) 17:30', notes:['제35회 졸업전시회.'], src:['post']},
+  {id:'swu-art', school:'swu', dept:'현대미술전공', title:'유영 지대 (Footloose)', start:'2026-11-17', end:'2026-11-28',
+   venue:'조형예술관 1F·4F', map:'서울여자대학교 조형예술관',
+   hours:[['매일','10:00–20:00']], notes:['제40회 졸업전시.'], src:['post']},
+  {id:'kookmin-film', school:'kookmin', dept:'영상디자인학과', title:'OFF-LINE', start:'2026-11-18', end:'2026-11-22',
+   venue:'MIJINFLOOR (미진플로어)', map:'미진플로어',
+   hours:[['매일','10:00–20:00']], opening:'11.18 (수) 18:00',
+   extra:[['상영','11.15 (일) · 아리랑 인디웨이브(일반 관람) / 아리랑시네센터 2관(초청)']],
+   notes:['안내 이미지에는 전시명이 ‘해:지고도 선명한’으로 적혀 있지만 계명대 전시명과 같아 잘못 옮긴 것으로 보고, 포스터에 적힌 ‘OFF-LINE’으로 표시했습니다.',
+          '전시장 MIJINFLOOR의 위치를 확인하지 못해 지역은 국민대(성북구) 기준으로 표시했습니다.'], src:['post']},
+  {id:'kangwon-ceramic', school:'kangwon', campus:'강릉캠퍼스', dept:'도자디자인전공', org:'조형예술디자인학과', title:'반향 (Resonance)', start:'2026-11-23', end:'2026-11-29',
+   venue:'해람문화관 2층 아트스페이스 해람', map:'강원대학교 강릉캠퍼스 해람문화관',
+   opening:'11.23 (월) 17:00', notes:['관람 시간은 이미지에 적혀 있지 않습니다.'], src:['post']},
+  {id:'hknu-psd', school:'hknu', dept:'제품공간디자인전공', title:'_core : Find Your Own _core', start:'2026-11-19', end:'2026-11-21',
+   venue:'아트숨비센터 2F', address:'서울 은평구 은평로8길 9', map:'아트숨비센터',
+   hours:[['11.19 (목)','13:00–18:00'],['11.20 (금)','10:00–18:00'],['11.21 (토)','10:00–16:00']], opening:'11.19 (목) 13:00', src:['post']},
+  {id:'knuh-ceramic', school:'knuh', dept:'도자전공', org:'전통미술공예학과', kind:'졸업작품전', title:'전통을 전하다', start:'2026-10-28', end:'2026-11-02',
+   venue:'마루아트센터 2·3관', address:'서울 종로구 인사동길 35-6', map:'마루아트센터',
+   hours:[['매일','10:30–18:30']], notes:['제23회 졸업작품전. 전공별로 기간과 장소가 다릅니다.'], src:['post']},
+  {id:'knuh-painting', school:'knuh', dept:'회화전공', org:'전통미술공예학과', kind:'졸업작품전', title:'전통을 전하다', start:'2026-10-28', end:'2026-11-04',
+   venue:'충무아트센터 갤러리 G1', address:'서울 중구 퇴계로 387', map:'충무아트센터',
+   hours:[['매일','10:00–18:00']], notes:['제23회 졸업작품전. 전공별로 기간과 장소가 다릅니다.'], src:['post']},
+  {id:'knuh-textile', school:'knuh', dept:'전통섬유전공', org:'전통미술공예학과', kind:'졸업작품전', title:'전통을 전하다', start:'2026-11-10', end:'2026-11-16',
+   venue:'한국전통문화대학교 안국동 별궁', map:'한국전통문화대학교 안국동 별궁',
+   hours:[['매일','09:00–18:00']], notes:['제23회 졸업작품전. 전공별로 기간과 장소가 다릅니다.'], src:['post']},
+  {id:'knuh-sculpture', school:'knuh', dept:'조각전공', org:'전통미술공예학과', kind:'졸업작품전', title:'전통을 전하다', start:'2026-11-10', end:'2026-11-16',
+   venue:'조각실습동 1층 전시관', map:'한국전통문화대학교',
+   hours:[['매일','09:00–18:00']], notes:['제23회 졸업작품전. 전공별로 기간과 장소가 다릅니다.','지역은 한국전통문화대학교 캠퍼스(충남 부여) 기준입니다.'], src:['post']},
+  {id:'konkuk-id1', school:'konkuk', campus:'글로컬캠퍼스', dept:'산업디자인학과', kind:'졸업전시 1부', title:'UNLISTED PLACE™', start:'2026-11-05', end:'2026-11-08',
+   venue:'홍익대학교 대학로 아트센터 갤러리 B1', address:'서울 종로구 대학로 57', map:'홍익대학교 대학로 아트센터',
+   hours:[['매일','10:00–18:00']], notes:['제39회 졸업전시 1부. 포스터 표기는 ‘2027 건국대학교 글로컬캠퍼스 산업디자인학과’입니다.'], src:['post']},
+  {id:'konkuk-id2', school:'konkuk', campus:'글로컬캠퍼스', dept:'산업디자인학과', kind:'졸업전시 2부', title:'UNLISTED PLACE™', start:'2026-11-10', end:'2026-11-13',
+   venue:'글로컬 이음관 상허 제1·2전시관', map:'건국대학교 글로컬캠퍼스 글로컬이음관',
+   hours:[['매일','10:00–17:30']], notes:['제39회 졸업전시 2부.'], src:['post']},
+  {id:'kangwon-art', school:'kangwon', campus:'춘천캠퍼스', dept:'미술학과', kind:'졸업작품전', title:'異音 (이음)', start:'2026-11-24', end:'2026-11-29',
+   venue:'미술관 제1·2전시실 (백령스포츠센터 2층)', address:'강원특별자치도 춘천시 강원대학길 1', map:'강원대학교 미술관',
+   hours:[['매일','10:00–18:00']], opening:'11.24 (화) 13:30', notes:['제50회 졸업작품전.'], src:['post']},
 ];
 
 /* 포스터: posters/<파일>.jpg. 홍익대 개별 포스터가 없는 학과는 미대 일정표 이미지 */
 const POSTER_FILES=new Set(['hongik-oriental','kyunghee-ceramic','kookmin-painting','kyonggi-western','dongguk-korean','hongik-metal',
   'kookmin-sculpture','kookmin-id','konkuk-vcd','chugye-oriental','dongguk-western','hongik-id','suwon-craft','kyunghee-vcd',
   'hannam-painting','hywu-knit','gachon-sculpture','uos-id','mju-anim','pknu-vcd','cnu-craft','dongduk-vcd','kongju-jewel',
-  'hanseo-space','yu-product','skuniv-vd','pnu-dt','konkuk-film','duksung-interior','daegu-id','konkuk-media','hyerica-cd']);
+  'hanseo-space','yu-product','skuniv-vd','pnu-dt','konkuk-film','duksung-interior','daegu-id','konkuk-media','hyerica-cd',
+  'hongik-print','kookmin-ceramic','snu-metal','cau-korean','sookmyung-painting','keimyung-painting','skku-surface','duksung-oriental',
+  'sungshin-design','seoultech-ceramic','kyonggi-jewel','swu-art','kookmin-film','kangwon-ceramic','hknu-psd','kangwon-art']);
 const posterOf=e=> POSTER_FILES.has(e.id)?e.id : e.school==='ewha'?'ewha' : /^konkuk-fa/.test(e.id)?'konkuk-fa'
-  : /^smu-craft/.test(e.id)?'smu-craft' : e.school==='hongik'?'hongik-table' : null;
+  : /^smu-craft/.test(e.id)?'smu-craft' : /^knuh-/.test(e.id)?'knuh-craft' : /^konkuk-id/.test(e.id)?'konkuk-id'
+  : e.school==='hongik'?'hongik-table' : null;
 
 /* ---------- helpers ---------- */
 const WD=['일','월','화','수','목','금','토'];
@@ -595,10 +682,28 @@ const VENUES={
   konkukS: {sido:'서울',gu:'광진구',dong:'화양동',alias:['건대','건대입구']},
   sophora: {sido:'서울',gu:'중구',dong:'정동',alias:['덕수궁','시청','정동길']},
   dtm:     {sido:'대구',gu:'동구',dong:'봉무동',alias:['팔공산']},
+  snu:     {sido:'서울',gu:'관악구',dong:'신림동',alias:['서울대','관악']},
+  cau:     {sido:'서울',gu:'동작구',dong:'흑석동',alias:['중앙대','흑석']},
+  sookmyung:{sido:'서울',gu:'용산구',dong:'청파동2가',alias:['숙대','숙대입구','청파동']},
+  keimyung:{sido:'대구',gu:'남구',dong:'대명동',alias:['계명대','대명']},
+  skku:    {sido:'서울',gu:'종로구',dong:'명륜3가',alias:['성대','혜화','명륜동']},
+  sungshin:{sido:'서울',gu:'성북구',dong:'동선동3가',alias:['성신여대','성신여대입구','돈암']},
+  insa1010:{sido:'서울',gu:'종로구',dong:'인사동',alias:['인사동','안국']},
+  kyonggiS:{sido:'경기',gu:'수원시 영통구',dong:'이의동',alias:['수원','광교','경기대']},
+  swu:     {sido:'서울',gu:'노원구',dong:'공릉동',alias:['서울여대','화랑대','태릉']},
+  kangwonG:{sido:'강원',gu:'강릉시',dong:'지변동',alias:['강릉','강원대 강릉']},
+  kangwonC:{sido:'강원',gu:'춘천시',dong:'효자동',alias:['춘천','강원대']},
+  artsumbi:{sido:'서울',gu:'은평구',dong:'은평로8길 일대',alias:['은평','응암']},
+  chungmu: {sido:'서울',gu:'중구',dong:'흥인동',alias:['충무아트센터','동대문','신당']},
+  anguk:   {sido:'서울',gu:'종로구',dong:'안국동',alias:['안국','북촌','인사동']},
+  knuhB:   {sido:'충남',gu:'부여군',dong:'규암면',alias:['부여','전통문화대']},
 };
 const VENUE_OF={'konkuk-fa1':'konkukG','konkuk-fa2':'insadong','konkuk-vcd':'daehakro','kyonggi-western':'insadong','suwon-craft':'insadong','hywu-knit':'ddp',
   'mju-anim':'monaco','kongju-jewel':'roselime','hanseo-space':'understand','pnu-dt':'bdc','smu-craft2':'lightium','konkuk-film':'konkukS',
-  'duksung-interior':'sophora','daegu-id':'dtm','konkuk-media':'daehakro','hyerica-cd':'daehakro'};
+  'duksung-interior':'sophora','daegu-id':'dtm','konkuk-media':'daehakro','hyerica-cd':'daehakro',
+  'kookmin-ceramic':'insadong','duksung-oriental':'insadong','seoultech-ceramic':'insa1010','kyonggi-jewel':'kyonggiS',
+  'kangwon-ceramic':'kangwonG','kangwon-art':'kangwonC','hknu-psd':'artsumbi','knuh-ceramic':'insadong','knuh-painting':'chungmu',
+  'knuh-textile':'anguk','knuh-sculpture':'knuhB','konkuk-id1':'daehakro','konkuk-id2':'konkukG'};
 const norm=s=>String(s||'').replace(/^\s*동선\s*짜기\s*[-–:]?\s*/,'').replace(/\s+/g,'').toLowerCase();
 Object.values(VENUES).forEach(v=>{
   const raw=[v.sido,v.gu,v.gu.split(' ').pop(),v.dong,v.sido+v.gu,...v.alias];

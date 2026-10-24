@@ -372,11 +372,14 @@ const SCHOOLS = {
   kangwon: {name:'강원대학교',      short:'강원대',   h:195, s:75, l:36},
   hknu:    {name:'한경국립대학교',  short:'한경대',   h:325, s:80, l:42},
   knuh:    {name:'한국전통문화대학교', short:'전통문화대', h:355, s:50, l:32},
+  yewon:   {name:'예원예술대학교',  short:'예원예대', h:5,   s:70, l:44},
+  kdu:     {name:'경동대학교',      short:'경동대',   h:335, s:65, l:40},
+  dankook: {name:'단국대학교',      short:'단국대',   h:20,  s:75, l:45},
 };
 const S_HG='hongik-table';
 const CREDIT='@cultureart4u', CREDIT_URL='https://www.instagram.com/cultureart4u/';
 const ISSUE_URL='https://github.com/entjs-whale/art-grad-calendar/issues/new';
-const UPDATED='2026.10.20';
+const UPDATED='2026.10.24';
 const EVENTS = [
   // 홍익대학교 — 2026학년도 미술대학 졸업전시 일정표 + 개별 포스터
   {id:'hongik-fiber', school:'hongik', dept:'섬유미술패션디자인과', start:'2026-10-19', end:'2026-10-24',
@@ -619,6 +622,61 @@ const EVENTS = [
   {id:'kangwon-art', school:'kangwon', campus:'춘천캠퍼스', dept:'미술학과', kind:'졸업작품전', title:'異音 (이음)', start:'2026-11-24', end:'2026-11-29',
    venue:'미술관 제1·2전시실 (백령스포츠센터 2층)', address:'강원특별자치도 춘천시 강원대학길 1', map:'강원대학교 미술관',
    hours:[['매일','10:00–18:00']], opening:'11.24 (화) 13:30', notes:['제50회 졸업작품전.'], src:['post']},
+  // ---- 2026.10.24 추가 ----
+  {id:'ewha-oriental', school:'ewha', dept:'동양화과', title:'Bazaar', start:'2026-11-24', end:'2026-11-29',
+   venue:'조형예술대학 A동', map:'이화여자대학교 조형예술관',
+   notes:['관람 시간은 포스터에 적혀 있지 않습니다.'], src:['post']},
+  {id:'kookmin-space', school:'kookmin', dept:'공간디자인학과', title:'0,0,0 : ORIGIN', start:'2026-11-03', end:'2026-11-09',
+   venue:'아라아트센터 3·4층', address:'서울 종로구 인사동9길 26', map:'아라아트센터',
+   notes:['제26회 졸업전시회. 관람 시간은 포스터에 적혀 있지 않습니다.'], src:['post']},
+  {id:'duksung-textile', school:'duksung', dept:'텍스타일디자인전공', title:'말쑥하게 그대로 : 편지를 부칠까요?', start:'2026-11-26', end:'2026-12-01',
+   venue:'나무 모던 앤 컨템포러리 아트 갤러리', address:'서울 종로구 북촌로 21-15', map:'갤러리 나무 북촌로',
+   hours:[['12.01 (화)','11:00–17:00'],['매일','11:00–19:00']], opening:'11.26 (목) 18:00', src:['post']},
+  {id:'kyunghee-fa-painting', school:'kyunghee', campus:'서울캠퍼스', dept:'회화전공', org:'미술대학', title:'굳은 땅을 밀어내고', start:'2026-11-16', end:'2026-11-22',
+   venue:'미술대학 KUMA', address:'서울 동대문구 경희대로 26', map:'경희대학교 미술대학',
+   opening:'11.16 (월) 18:00', notes:['제58회 미술대학 졸업전시회. 전공별로 기간이 다릅니다. 관람 시간은 포스터에 적혀 있지 않습니다.'], src:['post']},
+  {id:'kyunghee-fa-sculpture', school:'kyunghee', campus:'서울캠퍼스', dept:'조소·한국화전공', org:'미술대학', title:'굳은 땅을 밀어내고', start:'2026-11-26', end:'2026-12-02',
+   venue:'미술대학 KUMA', address:'서울 동대문구 경희대로 26', map:'경희대학교 미술대학',
+   opening:'11.26 (목) 18:00', notes:['제58회 미술대학 졸업전시회. 전공별로 기간이 다릅니다. 관람 시간은 포스터에 적혀 있지 않습니다.'], src:['post']},
+  {id:'yewon-vcd', school:'yewon', dept:'시각영상디자인학과', title:'THE MISSING PIECE', start:'2026-11-12', end:'2026-11-16',
+   venue:'유나이티드 갤러리 1층', address:'서울 강남구 강남대로102길 41', map:'유나이티드갤러리',
+   hours:[['매일','10:00–19:00']], notes:['제9회 졸업전시회.'], src:['post']},
+  {id:'seoultech-id', school:'seoultech', dept:'산업디자인학과', org:'조형대학', title:'shoot', start:'2026-11-04', end:'2026-11-10',
+   venue:'백주년기념관 목산갤러리 1–3층', map:'서울과학기술대학교 100주년기념관',
+   hours:[['매일','10:00–20:00']], notes:['제44회 졸업전시회.'], src:['post']},
+  {id:'cau-craft', school:'cau', dept:'공예학과', org:'디자인학부', title:'이러한, 만듦새들', start:'2026-11-25', end:'2026-11-30',
+   venue:'구띠갤러리', address:'서울 서초구 서초대로38길 15', map:'구띠갤러리',
+   hours:[['매일','10:00–18:00']], notes:['제67회 졸업전시회. 부제 ‘형태 속의 태도’.'], src:['post']},
+  {id:'kookmin-ai', school:'kookmin', dept:'AI디자인학과', title:'REALIZE', start:'2026-11-13', end:'2026-11-18',
+   venue:'조형관 1층 조형갤러리', map:'국민대학교 조형관',
+   notes:['관람 시간은 포스터에 적혀 있지 않습니다.'], src:['post']},
+  {id:'hongik-grad-vcd', school:'hongik', dept:'시각디자인전공 (대학원)', org:'대학원 디자인학부', kind:'석사학위청구전', title:'CONDITIONS', start:'2026-10-19', end:'2026-10-24',
+   venue:'홍문관 1층 104호', address:'서울 마포구 와우산로 94', map:'홍익대학교 홍문관',
+   hours:[['매일','10:00–20:00']], notes:['학부 졸업전시가 아닌 대학원 석사학위청구전입니다.'], src:['post']},
+  {id:'kdu-design', school:'kdu', dept:'디자인학과', title:'CHECK-OUT', start:'2026-10-30', end:'2026-11-03',
+   venue:'갤러리 루미나리에 1층', address:'서울 서초구 서초대로70길 6', map:'갤러리 루미나리에',
+   hours:[['매일','10:00–18:00']], opening:'10.31 (토) 11:00', notes:['제22회 졸업전시회.'], src:['post']},
+  {id:'uos-vcd', school:'uos', dept:'시각디자인전공', start:'2026-11-12', end:'2026-11-16',
+   venue:'빨간벽돌갤러리', address:'서울특별시 동대문구 서울시립대로 163', map:'서울시립대학교 빨간벽돌갤러리',
+   notes:['별도 전시명 없이 열리는 졸업전시회입니다. 관람 시간은 포스터에 적혀 있지 않습니다.'], src:['post']},
+  {id:'sungshin-sculpture', school:'sungshin', campus:'돈암수정캠퍼스', dept:'조소과', title:'SP[✱]CE', start:'2026-11-10', end:'2026-11-15',
+   venue:'수정관 1F 가온갤러리 · 난향관 4F 파이룸 · 조형1관 S101', map:'성신여자대학교 수정캠퍼스',
+   opening:'11.10 (화) 14:00', notes:['관람 시간은 포스터에 적혀 있지 않습니다.'], src:['post']},
+  {id:'kyunghee-id', school:'kyunghee', campus:'국제캠퍼스', dept:'산업디자인학과', title:'THIS IS NOT GRADUATION : THIS IS A NEW PATHWAY', start:'2026-11-11', end:'2026-11-16',
+   venue:'예술디자인대학 2층 A&D HALL', map:'경희대학교 국제캠퍼스 예술디자인대학',
+   hours:[['매일','10:00–20:00']], opening:'11.11 (수) 17:30', notes:['제35회 졸업전시회. 부제 ‘하나의 끝, 새로운 길’.'], src:['post']},
+  {id:'smu-textile1', school:'smu', campus:'천안캠퍼스', dept:'텍스타일디자인전공', kind:'졸업전시회 1부', title:'VOID TO FORM : 공백에서 형상으로', start:'2026-10-18', end:'2026-10-23',
+   venue:'디자인대학 갤러리 1F', address:'충남 천안시 동남구 상명대길 31', map:'상명대학교 천안캠퍼스 디자인대학',
+   hours:[['매일','09:00–19:00']], notes:['제36회 졸업전시회 1부(천안).'], src:['post']},
+  {id:'smu-textile2', school:'smu', dept:'텍스타일디자인전공', kind:'졸업전시회 2부', title:'VOID TO FORM : 공백에서 형상으로', start:'2026-11-12', end:'2026-11-16',
+   venue:'인사아트프라자 2F', address:'서울 종로구 인사동길 34-1', map:'인사아트프라자',
+   hours:[['매일','10:00–18:00']], notes:['제36회 졸업전시회 2부(서울 인사동).'], src:['post']},
+  {id:'dku-ceramic', school:'dankook', dept:'도예과', org:'음악·예술대학', title:'앗뜨', start:'2026-11-04', end:'2026-11-09',
+   venue:'갤러리 인사1010', address:'서울 종로구 인사동10길 10', map:'갤러리 인사1010',
+   hours:[['11.04 (수)','17:00–19:00 (오프닝)'],['11.05–11.09','11:00–19:00']], opening:'11.04 (수) 17:00–19:00', notes:['제52회 졸업전시.'], src:['post']},
+  {id:'konkuk-cart', school:'konkuk', campus:'서울캠퍼스', dept:'현대미술학과', title:'Avant', start:'2026-10-14', end:'2026-10-20',
+   venue:'갤러리 인사1010', address:'서울 종로구 인사동10길 10', map:'갤러리 인사1010',
+   notes:['2026 B.F.A Show. 전시명은 포스터의 장식 글자를 읽은 것이라 정확하지 않을 수 있습니다. 관람 시간은 포스터에 적혀 있지 않습니다.'], src:['post']},
 ];
 
 /* 포스터: posters/<파일>.jpg. 홍익대 개별 포스터가 없는 학과는 미대 일정표 이미지 */
@@ -627,9 +685,11 @@ const POSTER_FILES=new Set(['hongik-oriental','kyunghee-ceramic','kookmin-painti
   'hannam-painting','hywu-knit','gachon-sculpture','uos-id','mju-anim','pknu-vcd','cnu-craft','dongduk-vcd','kongju-jewel',
   'hanseo-space','yu-product','skuniv-vd','pnu-dt','konkuk-film','duksung-interior','daegu-id','konkuk-media','hyerica-cd',
   'hongik-print','kookmin-ceramic','snu-metal','cau-korean','sookmyung-painting','keimyung-painting','skku-surface','duksung-oriental',
-  'sungshin-design','seoultech-ceramic','kyonggi-jewel','swu-art','kookmin-film','kangwon-ceramic','hknu-psd','kangwon-art']);
+  'sungshin-design','seoultech-ceramic','kyonggi-jewel','swu-art','kookmin-film','kangwon-ceramic','hknu-psd','kangwon-art',
+  'ewha-oriental','kookmin-space','duksung-textile','yewon-vcd','seoultech-id','cau-craft','kookmin-ai','hongik-grad-vcd',
+  'kdu-design','uos-vcd','sungshin-sculpture','kyunghee-id','dku-ceramic','konkuk-cart']);
 const posterOf=e=> POSTER_FILES.has(e.id)?e.id : e.school==='ewha'?'ewha' : /^konkuk-fa/.test(e.id)?'konkuk-fa'
-  : /^smu-craft/.test(e.id)?'smu-craft' : /^knuh-/.test(e.id)?'knuh-craft' : /^konkuk-id/.test(e.id)?'konkuk-id'
+  : /^smu-craft/.test(e.id)?'smu-craft' : /^knuh-/.test(e.id)?'knuh-craft' : /^kyunghee-fa/.test(e.id)?'kyunghee-fa' : /^smu-textile/.test(e.id)?'smu-textile' : /^konkuk-id/.test(e.id)?'konkuk-id'
   : e.school==='hongik'?'hongik-table' : null;
 
 /* ---------- helpers ---------- */
@@ -697,13 +757,24 @@ const VENUES={
   chungmu: {sido:'서울',gu:'중구',dong:'흥인동',alias:['충무아트센터','동대문','신당']},
   anguk:   {sido:'서울',gu:'종로구',dong:'안국동',alias:['안국','북촌','인사동']},
   knuhB:   {sido:'충남',gu:'부여군',dong:'규암면',alias:['부여','전통문화대']},
+  seoultech:{sido:'서울',gu:'노원구',dong:'공릉동',alias:['서울과기대','공릉','과기대']},
+  ara:     {sido:'서울',gu:'종로구',dong:'견지동',alias:['인사동','안국','조계사']},
+  namu:    {sido:'서울',gu:'종로구',dong:'재동',alias:['북촌','안국','삼청']},
+  khSeoul: {sido:'서울',gu:'동대문구',dong:'회기동',alias:['경희대','회기','경희대 서울']},
+  united:  {sido:'서울',gu:'강남구',dong:'역삼동',alias:['강남역','신논현']},
+  gutti:   {sido:'서울',gu:'서초구',dong:'서초동',alias:['교대','서초']},
+  lumi:    {sido:'서울',gu:'서초구',dong:'서초동',alias:['강남역','서초']},
+  smuC:    {sido:'충남',gu:'천안시 동남구',dong:'안서동',alias:['천안','상명대 천안']},
 };
 const VENUE_OF={'konkuk-fa1':'konkukG','konkuk-fa2':'insadong','konkuk-vcd':'daehakro','kyonggi-western':'insadong','suwon-craft':'insadong','hywu-knit':'ddp',
   'mju-anim':'monaco','kongju-jewel':'roselime','hanseo-space':'understand','pnu-dt':'bdc','smu-craft2':'lightium','konkuk-film':'konkukS',
   'duksung-interior':'sophora','daegu-id':'dtm','konkuk-media':'daehakro','hyerica-cd':'daehakro',
   'kookmin-ceramic':'insadong','duksung-oriental':'insadong','seoultech-ceramic':'insa1010','kyonggi-jewel':'kyonggiS',
   'kangwon-ceramic':'kangwonG','kangwon-art':'kangwonC','hknu-psd':'artsumbi','knuh-ceramic':'insadong','knuh-painting':'chungmu',
-  'knuh-textile':'anguk','knuh-sculpture':'knuhB','konkuk-id1':'daehakro','konkuk-id2':'konkukG'};
+  'knuh-textile':'anguk','knuh-sculpture':'knuhB','konkuk-id1':'daehakro','konkuk-id2':'konkukG',
+  'kookmin-space':'ara','duksung-textile':'namu','kyunghee-fa-painting':'khSeoul','kyunghee-fa-sculpture':'khSeoul',
+  'yewon-vcd':'united','cau-craft':'gutti','kdu-design':'lumi',
+  'smu-textile1':'smuC','smu-textile2':'insadong','dku-ceramic':'insa1010','konkuk-cart':'insa1010'};
 const norm=s=>String(s||'').replace(/^\s*동선\s*짜기\s*[-–:]?\s*/,'').replace(/\s+/g,'').toLowerCase();
 Object.values(VENUES).forEach(v=>{
   const raw=[v.sido,v.gu,v.gu.split(' ').pop(),v.dong,v.sido+v.gu,...v.alias];
@@ -761,12 +832,14 @@ ftoggle.addEventListener('click',()=>{
   const open=ftoggle.getAttribute('aria-expanded')!=='true';
   ftoggle.setAttribute('aria-expanded',open); filters.classList.toggle('open',open);
 });
+const sortKey=k=>SCHOOLS[k].name.replace(/^국립/,'');
+const sortedSchools=[...order].sort((a,b)=>sortKey(a).localeCompare(sortKey(b),'ko'));
 function renderFilters(){
   const all=active.size===order.length;
   const picked=order.filter(k=>active.has(k));
   ftoggle.innerHTML=`<span>학교 선택 · ${all?`전체 ${order.length}곳`:picked.length===1?esc(SCHOOLS[picked[0]].name):`${picked.length}곳`}</span><span class="caret" aria-hidden="true">▼</span>`;
   filters.innerHTML=`<button class="chip all" id="f-all" aria-pressed="${all}">전체 보기</button>`+
-    order.map(k=>{const s=SCHOOLS[k];const n=EVENTS.filter(e=>e.school===k).length;
+    sortedSchools.map(k=>{const s=SCHOOLS[k];const n=EVENTS.filter(e=>e.school===k).length;
       return `<button class="chip" id="f-${k}" data-k="${k}" aria-pressed="${active.has(k)}" style="--h:${s.h};--s:${s.s};--l:${s.l}"><span class="sw"></span>${s.name}<span class="n">${n}</span></button>`}).join('');
 }
 filters.addEventListener('click',ev=>{
